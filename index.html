@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#511419">
+  <meta name="description" content="Trân trọng kính mời bạn đến chung vui trong ngày thành hôn của chúng tôi.">
+  <title>Thiệp cưới · Hoàng Long & Bảo Ngọc</title>
+  <link rel="stylesheet" href="assets/fonts/fonts.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="config.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body class="awaiting-open">
+  <section class="opening-screen" id="opening-screen" aria-labelledby="opening-title">
+    <div class="opening-hearts" id="opening-hearts" aria-hidden="true"></div>
+    <div class="opening-content">
+      <img class="opening-flower opening-flower-left" src="assets/flower2-decoration.webp" alt="" aria-hidden="true">
+      <img class="opening-flower opening-flower-right" src="assets/flower2-decoration.webp" alt="" aria-hidden="true">
+      <div class="opening-seal" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path d="M12 21S2 14.7 2 7.8C2 1.8 9.2 1 12 5.5 14.8 1 22 1.8 22 7.8 22 14.7 12 21 12 21Z"/></svg></div>
+      <h2 class="opening-title" id="opening-title">Thiệp mời cưới</h2>
+      <p class="opening-names"><span data-text="groom.name"></span><span class="opening-amp">&</span><span data-text="bride.name"></span></p>
+      <div class="opening-divider" aria-hidden="true"><span></span><svg viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 15V6H7v9zM8 8C2 8 2 4 2 4s6-1 6 4Zm0 3c6 0 6-4 6-4s-6-1-6 4ZM8 5C4 5 4 1 4 1s5 0 4 4Z"/></svg><span></span></div>
+      <p class="opening-date" id="opening-date"></p>
+      <p class="opening-greeting">Thân Mời</p>
+      <button class="opening-envelope" id="open-invitation" type="button" aria-controls="invitation" aria-expanded="false">
+        Mở thiệp
+      </button>
+    </div>
+  </section>
+  <a class="skip" href="#ceremony">Xem thông tin lễ cưới</a>
+  <main class="invitation" id="invitation" hidden inert tabindex="-1">
+    <header class="hero">
+      <img class="castle" src="assets/castle-background.webp" alt="" aria-hidden="true">
+      <p class="save-date">Save The Date</p>
+      <div class="envelope">
+        <img class="envelope-back" src="assets/envelope-background.webp" alt="">
+        <div class="portrait"><img id="cover" alt="Ảnh cô dâu và chú rể" fetchpriority="high"></div>
+        <img class="hero-flower" src="assets/flower2-decoration.webp" alt="">
+        <img class="envelope-front" src="assets/envelope-cover.webp" alt="">
+      </div>
+      <h1 class="couple"><span data-text="groom.name"></span><span class="amp" aria-hidden="true">&</span><span data-text="bride.name"></span></h1>
+    </header>
+    <section class="paper-section" id="ceremony" aria-labelledby="ceremony-title">
+      <img class="flower flower-right" src="assets/flower2-decoration.webp" alt="">
+      <div class="red-paper">
+        <h2 id="ceremony-title">Thông tin lễ cưới</h2>
+        <div class="families"><div><p>Ông Bà</p><strong data-text="groom.father"></strong><strong data-text="groom.mother"></strong><small data-text="groom.familyAddress"></small></div><div><p>Ông Bà</p><strong data-text="bride.father"></strong><strong data-text="bride.mother"></strong><small data-text="bride.familyAddress"></small></div></div>
+        <p class="announcement">Trân trọng báo tin<br>Lễ thành hôn của con chúng tôi</p>
+        <div class="formal-names"><h3 data-text="groom.fullName"></h3><p data-text="groom.role"></p><span class="script-amp">&</span><h3 data-text="bride.fullName"></h3><p data-text="bride.role"></p></div>
+        <p class="ceremony-place">Lễ thành hôn được cử hành tại<br><strong data-text="ceremony.venue"></strong></p>
+        <p class="ceremony-address" data-text="ceremony.address"></p>
+        <div id="ceremony-date" class="event-date"></div>
+        <p class="lunar" id="ceremony-lunar"></p>
+      </div>
+    </section>
+    <section class="album section" aria-labelledby="album-title">
+      <img class="castle" src="assets/castle-background.webp" alt="" aria-hidden="true">
+      <h2 id="album-title">Album ảnh</h2>
+      <div id="album-stage" class="album-stage"></div>
+      <div class="album-controls"><button class="icon-button" id="album-prev" aria-label="Ảnh trước">←</button><span id="album-count" aria-live="polite"></span><button class="icon-button" id="album-next" aria-label="Ảnh tiếp theo">→</button></div>
+      <p class="quiet">Vuốt để xem · Chạm ảnh để phóng to</p>
+    </section>
+    <section class="paper-section" id="reception" aria-labelledby="reception-title">
+      <img class="flower flower-left" src="assets/flower2-decoration.webp" alt="">
+      <div class="red-paper">
+        <h2 id="reception-title">Thông tin tiệc cưới</h2>
+        <p class="party-intro">Tiệc cưới sẽ diễn ra vào lúc</p>
+        <div id="reception-date" class="event-date"></div><p class="lunar" id="reception-lunar"></p>
+        <div class="party-times"><div>Đón khách<strong data-text="reception.welcomeTime"></strong></div><div>Khai tiệc<strong data-text="reception.time"></strong></div></div>
+        <div id="calendar" class="calendar"></div>
+        <button class="text-button" id="add-calendar">Thêm vào lịch</button>
+        <a class="button cream-button" href="#rsvp">Xác nhận tham dự</a>
+      </div>
+    </section>
+    <section class="location section" aria-labelledby="location-title">
+      <img class="castle" src="assets/castle-background.webp" alt="" aria-hidden="true">
+      <p>Tiệc cưới sẽ tổ chức tại</p><h2 id="location-title" data-text="reception.venue"></h2><p class="address" data-text="reception.address"></p>
+      <div class="venue-illustration"><img src="assets/castle-background.webp" alt="Minh họa địa điểm tiệc cưới"></div>
+      <a id="directions" class="button" target="_blank" rel="noopener">Chỉ đường</a>
+      <h3 class="dress-heading">Dress code</h3><p>Trang phục dự tiệc</p><div id="dress-code" class="dress-code"></div>
+    </section>
+    <section class="paper-section" aria-labelledby="timeline-title"><img class="flower flower-right" src="assets/flower2-decoration.webp" alt=""><div class="red-paper"><h2 id="timeline-title">Lịch trình ngày cưới</h2><ol class="timeline" id="timeline"></ol></div></section>
+    <section class="rsvp section" id="rsvp" aria-labelledby="rsvp-title"><h2 id="rsvp-title">Hẹn gặp trong ngày vui</h2><p>Xin dành chút thời gian xác nhận để chúng tôi<br>đón tiếp bạn thật chu đáo.</p>
+      <form id="rsvp-form"><label for="guest-name">Tên của bạn</label><input id="guest-name" name="name" required maxlength="80" autocomplete="name" placeholder="Nhập tên của bạn"><label for="attendance">Bạn sẽ tham dự chứ?</label><select id="attendance" name="attendance"><option value="yes">Tôi sẽ đến chung vui</option><option value="no">Rất tiếc, tôi không thể tham dự</option></select><label for="guest-count">Số người tham dự</label><input id="guest-count" name="count" type="number" min="1" max="20" value="1" required><button class="button" type="submit">Gửi xác nhận</button><p class="form-note" id="rsvp-note"></p><p class="form-status" id="rsvp-status" role="status"></p></form>
+    </section>
+    <section class="guestbook section" aria-labelledby="guestbook-title"><h2 id="guestbook-title">Sổ lưu bút</h2><p>Một lời chúc, một kỷ niệm thật đẹp.</p><form id="wish-form"><label for="wish-name">Tên của bạn</label><input id="wish-name" required maxlength="80" autocomplete="name" placeholder="Tên người gửi"><label for="wish-message">Lời chúc của bạn</label><textarea id="wish-message" required maxlength="1000" rows="3" placeholder="Gửi đôi lời đến cô dâu và chú rể…"></textarea><button type="submit" class="button">Gửi lời chúc</button><p class="form-note">Lời chúc được lưu trên trình duyệt này.</p><p id="wish-status" class="form-status" role="status"></p></form><div id="wishes" class="wishes"></div></section>
+    <section class="gift section" aria-labelledby="gift-title"><h2 id="gift-title">Hộp quà mừng</h2><button class="gift-envelope" id="open-gift" aria-expanded="false" aria-controls="bank-details"><img src="assets/minimalism_darkred.webp" alt=""><span>Nhấn để mở</span></button><div id="bank-details" hidden><p class="quiet">Thông tin tài khoản mẫu</p><div id="banks"></div></div></section>
+    <footer><p data-text="closing"></p><div class="footer-names"><span data-text="groom.name"></span> & <span data-text="bride.name"></span></div><p class="footer-date" id="footer-date"></p></footer>
+  </main>
+  <button id="music" class="music-button" aria-label="Bật nhạc" hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l11-2v13M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/></svg></button>
+  <dialog id="lightbox"><button id="close-lightbox" class="lightbox-close" aria-label="Đóng ảnh">×</button><img id="lightbox-photo" alt="Ảnh cưới phóng to"><div class="lightbox-controls"><button id="lightbox-prev" aria-label="Ảnh trước">←</button><span id="lightbox-count"></span><button id="lightbox-next" aria-label="Ảnh tiếp theo">→</button></div></dialog>
+  <noscript><p class="noscript">Hãy bật JavaScript để hiển thị nội dung thiệp cưới.</p></noscript>
+</body>
+</html>

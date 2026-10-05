@@ -1,0 +1,33 @@
+{
+  "viewports": [
+    320,
+    390,
+    1440
+  ],
+  "javascriptErrors": [],
+  "horizontalOverflow": false,
+  "brokenImages": false,
+  "checks": {
+    "album": "pass",
+    "lightbox": "pass",
+    "rsvp": "pass",
+    "guestbook": "pass",
+    "gift": "pass",
+    "calendar": "pass",
+    "fileProtocol": "pass",
+    "bankClipboard": "pass",
+    "openingScreen": "pass",
+    "openingKeyboard": "pass",
+    "openingReducedMotion": "pass",
+    "openingOnReload": "pass",
+    "cardFlight": "pass",
+    "heartBurst": "pass",
+    "delayedReveal": "pass",
+    "particleCleanup": "pass",
+    "wholeCardClick": "pass"
+  },
+  "review": {
+    "disposition": "ship",
+    "scope": "Reviewer listed calendar and guestbook fixes resolved"
+  }
+}

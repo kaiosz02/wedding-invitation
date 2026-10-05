@@ -1,0 +1,204 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-05T03:32:59.121526+00:00",
+  "title": "Design System: Thiệp cưới",
+  "extensions": {
+    "colorMeta": {
+      "burgundy": {
+        "role": "primary",
+        "displayName": "Burgundy"
+      },
+      "cream": {
+        "role": "neutral",
+        "displayName": "Cream stock"
+      },
+      "paper-text": {
+        "role": "neutral",
+        "displayName": "Paper lettering and inset"
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Muted paper detail"
+      },
+      "focus": {
+        "role": "neutral",
+        "displayName": "Warm brown focus"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Names",
+        "purpose": "Couple names with desktop enlargement."
+      },
+      "headline": {
+        "displayName": "Formal heading",
+        "purpose": "Uppercase event headings."
+      },
+      "body": {
+        "displayName": "Invitation serif",
+        "purpose": "Body copy, forms and supporting details."
+      },
+      "script": {
+        "displayName": "Script ampersand",
+        "purpose": "Existing ampersand accents only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "red-paper",
+        "value": "4px 4px 10px #0004",
+        "purpose": "Raised burgundy paper."
+      },
+      {
+        "name": "guestbook-paper",
+        "value": "4px 6px 10px #51141926",
+        "purpose": "Cream guestbook paper."
+      },
+      {
+        "name": "album-photo",
+        "value": "0 12px 24px #51141926",
+        "purpose": "Layered photographic cards."
+      },
+      {
+        "name": "desktop-sheet",
+        "value": "0 0 45px #5114190f",
+        "purpose": "Faint outer sheet depth on desktop."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease",
+        "value": "cubic-bezier(.16,1,.3,1)",
+        "purpose": "Album and gift transformations."
+      },
+      {
+        "name": "album-transition",
+        "value": "transform .8s var(--ease), opacity .8s var(--ease)",
+        "purpose": "Photo-stack changes."
+      },
+      {
+        "name": "float",
+        "value": "translateY(0) to translateY(-8px)",
+        "purpose": "Gentle repeating movement of existing decorative objects."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "animation: none; transition: none; scroll-behavior: auto",
+        "purpose": "Applied under prefers-reduced-motion: reduce."
+      },
+      {
+        "name": "invitation-opening",
+        "value": "850ms card flight + 200ms pause + 1100ms crossfade",
+        "purpose": "Card flies upward with 36 mobile or 48 desktop heart particles; the main invitation fades in after the flight. Spatial motion is skipped with reduced motion."
+      },
+      {
+        "name": "opening-hearts",
+        "value": "12?16s ease-in-out infinite",
+        "purpose": "Sparse burgundy, cream and gold hearts drift behind the opening card; reduced motion disables this."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "desktop",
+        "value": "768px"
+      },
+      {
+        "name": "compact-max",
+        "value": "359px"
+      }
+    ],
+    "assetNotes": [
+      "Material textures and floral/envelope images remain sourced from ui_mau. Component preview snippets omit relative raster URLs so they remain portable in a shadow DOM; the shipped paper surfaces retain those textures."
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Burgundy action for forms and directions.",
+      "html": "<button class=\"ds-button\">Confirm attendance</button>",
+      "css": ".ds-button{font-family:var(--serif,'Cormorant Garamond','Times New Roman',serif);display:inline-flex;align-items:center;justify-content:center;min-height:46px;border:1px solid var(--red,#511419);border-radius:6px;background:var(--red,#511419);color:var(--cream,#fff7eb);padding:10px 24px;font-size:15px;letter-spacing:.03em;cursor:pointer;transition:background .2s}.ds-button:hover{background:#743139}.ds-button:focus-visible{outline:2px solid #b97b44;outline-offset:5px}.ds-button:disabled{opacity:.55;cursor:wait}@media(prefers-reduced-motion:reduce){.ds-button{transition:none}}"
+    },
+    {
+      "name": "Cream RSVP button",
+      "kind": "button",
+      "refersTo": "button-cream",
+      "description": "Pill action inside burgundy reception paper.",
+      "html": "<button class=\"ds-cream\">Confirm attendance</button>",
+      "css": ".ds-cream{font-family:var(--serif,'Cormorant Garamond','Times New Roman',serif);display:flex;align-items:center;justify-content:center;min-height:46px;max-width:270px;border:1px solid var(--paper-text,#ece4d8);border-radius:24px;background:var(--paper-text,#ece4d8);color:var(--red,#511419);padding:10px 24px;font-size:15px;letter-spacing:.03em;text-transform:uppercase;cursor:pointer;transition:background .2s}.ds-cream:hover{background:var(--cream,#fff7eb)}.ds-cream:focus-visible{outline:2px solid #b97b44;outline-offset:5px}@media(prefers-reduced-motion:reduce){.ds-cream{transition:none}}"
+    },
+    {
+      "name": "Text field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Readable warm paper field with visible keyboard focus.",
+      "html": "<label class=\"ds-label\" for=\"ds-name\">Your name</label><input class=\"ds-input\" id=\"ds-name\" placeholder=\"Enter your name\">",
+      "css": ".ds-label{font-family:var(--serif,'Cormorant Garamond','Times New Roman',serif);display:block;font-size:15px;font-weight:600;margin:16px 0 5px;color:var(--red,#511419)}.ds-input{font-family:var(--serif,'Cormorant Garamond','Times New Roman',serif);display:block;width:100%;padding:12px;border:1px solid #51141945;border-radius:5px;background:#fffaf2;color:var(--red,#511419);min-height:46px;caret-color:var(--red,#511419);font-size:16px}.ds-input::placeholder{color:#815658}.ds-input:focus-visible{outline:2px solid #b97b44;outline-offset:5px}"
+    },
+    {
+      "name": "Burgundy event paper",
+      "kind": "card",
+      "refersTo": "red-paper",
+      "description": "Textured inset panel for formal invitation details.",
+      "html": "<section class=\"ds-paper\"><h2>Wedding ceremony</h2><p>We warmly invite you to celebrate with us</p></section>",
+      "css": ".ds-paper{font-family:var(--serif,'Cormorant Garamond','Times New Roman',serif);position:relative;border-radius:13px;background:var(--red,#511419);color:var(--paper-text,#ece4d8);padding:36px 20px 40px;text-align:center;box-shadow:4px 4px 10px #0004}.ds-paper h2{font-family:\"Times New Roman\",serif;font-size:20px;line-height:1.35;font-weight:700;text-transform:uppercase;letter-spacing:.03em;margin:0 0 26px}.ds-paper p{font-size:14px;line-height:1.5;margin:0}"
+    },
+    {
+      "name": "Calendar inset",
+      "kind": "custom",
+      "refersTo": "calendar",
+      "description": "Cream inset with burgundy selected day.",
+      "html": "<section class=\"ds-calendar\"><h3>October</h3><div class=\"ds-week\"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div><div class=\"ds-days\"><span>5</span><span>6</span><span class=\"ds-selected\">7</span><span>8</span><span>9</span><span>10</span><span>11</span></div></section>",
+      "css": ".ds-calendar{font-family:var(--serif,'Cormorant Garamond','Times New Roman',serif);background:var(--paper-text,#ece4d8);color:var(--red,#511419);padding:20px 14px 22px;border-radius:10px;max-width:320px;text-align:center}.ds-calendar h3{font-weight:400;font-size:21px;margin:0 0 12px}.ds-week,.ds-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;font-variant-numeric:tabular-nums}.ds-week span{font-size:12px;color:#815658;border-bottom:1px solid var(--red,#511419);padding-bottom:5px}.ds-days span{display:flex;align-items:center;justify-content:center;aspect-ratio:1;font-size:15px}.ds-days .ds-selected{border-radius:50%;background:var(--red,#511419);color:var(--cream,#fff7eb)}"
+    },
+    {
+      "name": "Guestbook paper",
+      "kind": "card",
+      "refersTo": "guestbook-paper",
+      "description": "Cream form container with a soft material shadow.",
+      "html": "<section class=\"ds-guestbook\"><label for=\"ds-wish\">Your message</label><textarea id=\"ds-wish\" rows=\"3\" placeholder=\"Send your wishes to the couple\"></textarea></section>",
+      "css": ".ds-guestbook{font-family:var(--serif,'Cormorant Garamond','Times New Roman',serif);background:var(--cream,#fff7eb);color:var(--red,#511419);padding:12px 24px 24px;border-radius:10px;box-shadow:4px 6px 10px #51141926;max-width:360px;text-align:left}.ds-guestbook label{display:block;font-size:15px;font-weight:600;margin:16px 0 5px}.ds-guestbook textarea{font-family:var(--serif,'Cormorant Garamond','Times New Roman',serif);display:block;width:100%;padding:12px;border:1px solid #51141945;border-radius:5px;background:#fffaf2;color:var(--red,#511419);min-height:46px;font-size:16px;resize:vertical}.ds-guestbook textarea::placeholder{color:#815658}.ds-guestbook textarea:focus-visible{outline:2px solid #b97b44;outline-offset:5px}"
+    },
+    {
+      "name": "Wish card",
+      "kind": "card",
+      "refersTo": "wish",
+      "description": "Separate translucent cream note for a guest message.",
+      "html": "<article class=\"ds-wish\"><strong>Guest</strong><p>Wishing you a lifetime of happiness.</p></article>",
+      "css": ".ds-wish{font-family:var(--serif,'Cormorant Garamond','Times New Roman',serif);padding:16px;background:#fffaf2b3;color:var(--red,#511419);border:1px solid #51141938;border-radius:6px;margin-bottom:12px;text-align:left}.ds-wish strong{font-size:18px}.ds-wish p{margin:5px 0 0;font-size:16px;overflow-wrap:anywhere}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Paper Wedding Invitation",
+    "overview": "The supplied ui_mau is the visual authority. Burgundy paper, warm cream stock, formal serif lettering, floral cutouts and layered envelope imagery carry the invitation's intimate, ceremonial character.\n\nThe implemented system reads vertically on a phone. Cream sections alternate with inset burgundy panels; photographs and paper textures supply material depth. Preserve this established visual world when extending the page.",
+    "keyCharacteristics": [
+      "Warm cream stock and textured burgundy paper.",
+      "Formal serif names with script ampersands.",
+      "Centered invitation content and narrow, readable forms.",
+      "Layered floral, envelope and photographic assets from ui_mau."
+    ],
+    "rules": [
+      {
+        "name": "The Paper Contrast Rule",
+        "body": "Keep light lettering on burgundy panels and burgundy lettering on cream insets.",
+        "section": "colors"
+      },
+      {
+        "name": "The Script Accent Rule",
+        "body": "Use The Nautigal for the existing ampersand accents; retain serif typography for readable content and controls.",
+        "section": "typography"
+      }
+    ],
+    "dos": [
+      "Do preserve ui_mau's paper textures, floral assets, envelope composition and established palette.",
+      "Do keep the calendar inset and guestbook form/cards light against the surrounding paper.",
+      "Do retain readable serif form text, visible keyboard focus and reduced-motion behavior."
+    ],
+    "donts": [
+      "Don't replace the supplied visual world with a new aesthetic or a generic dashboard layout.",
+      "Don't flatten the envelope and photographic layers into unrelated decorative cards.",
+      "Don't extend script typography into body copy or form controls."
+    ]
+  }
+}
