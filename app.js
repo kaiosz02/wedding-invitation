@@ -49,6 +49,7 @@
     grid.append(cell);
   }
   $('directions').href = c.reception.mapUrl || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.reception.venue + ', ' + c.reception.address)}`;
+  $('venue-map').src = c.reception.mapEmbedUrl || `https://www.google.com/maps?q=${encodeURIComponent(c.reception.venue + ', ' + c.reception.address)}&output=embed`;
   c.dressCode.forEach(item => { const wrap = element('div'), swatch = element('span', null, 'swatch'); swatch.style.backgroundColor = item.color; wrap.append(swatch, element('span', item.name)); $('dress-code').append(wrap); });
   c.timeline.forEach(item => { const li = element('li'); li.append(element('time', item.time), element('span', item.title)); if (item.icon) { const img = element('img'); img.src = item.icon; img.alt = ''; img.loading = 'lazy'; li.append(img); } $('timeline').append(li); });
 
@@ -182,7 +183,12 @@
     copy.onclick = async () => { try { await navigator.clipboard.writeText(bank.accountNumber); copy.textContent = 'Đã sao chép'; } catch { const input = element('input'); input.value = bank.accountNumber; item.append(input); input.select(); copy.textContent = 'Chọn số và sao chép'; } };
     item.append(copy); $('banks').append(item);
   });
-  $('open-gift').onclick = () => { const open = $('bank-details').hidden; $('bank-details').hidden = !open; $('open-gift').setAttribute('aria-expanded', String(open)); $('open-gift').querySelector('span').textContent = open ? 'Nhấn để thu gọn' : 'Nhấn để mở'; };
+  let giftVisible = false;
+  function syncGiftMotion() { $('open-gift').classList.toggle('gift-motion-active', giftVisible && !document.hidden && !motionPreference.matches && $('bank-details').hidden); }
+  new IntersectionObserver(entries => { giftVisible = entries[0].isIntersecting; syncGiftMotion(); }, { threshold: .15 }).observe($('open-gift'));
+  document.addEventListener('visibilitychange', syncGiftMotion);
+  motionPreference.addEventListener('change', syncGiftMotion);
+  $('open-gift').onclick = () => { const open = $('bank-details').hidden; $('bank-details').hidden = !open; $('open-gift').setAttribute('aria-expanded', String(open)); $('open-gift').querySelector('.gift-caption').textContent = open ? 'Nhấn để thu gọn' : 'Nhấn để mở'; syncGiftMotion(); };
   const icsEscape = s => String(s).replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
   $('add-calendar').onclick = () => {
     const start = new Date(`${c.reception.date}T${c.reception.time}:00+07:00`), end = new Date(start.getTime() + 3 * 3600000);

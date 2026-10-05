@@ -81,9 +81,10 @@
     </section>
     <section class="location section" aria-labelledby="location-title">
       <img class="castle" src="assets/castle-background.webp" alt="" aria-hidden="true">
-      <p>Tiệc cưới sẽ tổ chức tại</p><h2 id="location-title" data-text="reception.venue"></h2><p class="address" data-text="reception.address"></p>
-      <div class="venue-illustration"><img src="assets/castle-background.webp" alt="Minh họa địa điểm tiệc cưới"></div>
-      <a id="directions" class="button" target="_blank" rel="noopener">Chỉ đường</a>
+      <h2 id="location-title">Tiệc cưới sẽ tổ chức tại</h2>
+      <p class="address"><span data-text="reception.venue"></span>, <span data-text="reception.address"></span></p>
+      <div class="venue-illustration venue-map"><iframe id="venue-map" title="Bản đồ địa điểm tiệc cưới — Tân Phát, Nga An, Thanh Hóa" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+      <a id="directions" class="map-directions" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 3-6 18-4-8-8-4 18-6zM11 13 21 3"/></svg><span>Chỉ đường</span></a>
       <h3 class="dress-heading">Dress code</h3><p>Trang phục dự tiệc</p><div id="dress-code" class="dress-code"></div>
     </section>
     <section class="paper-section" aria-labelledby="timeline-title"><img class="flower flower-right" src="assets/flower2-decoration.webp" alt=""><div class="red-paper"><h2 id="timeline-title">Lịch trình ngày cưới</h2><ol class="timeline" id="timeline"></ol></div></section>
@@ -103,7 +104,20 @@
       </form>
       <div id="wishes" class="wishes" role="region" aria-label="Lời chúc từ khách mời" tabindex="0"></div>
     </section>
-    <section class="gift section" aria-labelledby="gift-title"><h2 id="gift-title">Hộp quà mừng</h2><button class="gift-envelope" id="open-gift" aria-expanded="false" aria-controls="bank-details"><img src="assets/minimalism_darkred.webp" alt=""><span>Nhấn để mở</span></button><div id="bank-details" hidden><p class="quiet">Thông tin tài khoản mẫu</p><div id="banks"></div></div></section>
+    <section class="gift section" aria-labelledby="gift-title">
+      <img class="castle" src="assets/castle-background.webp" alt="" aria-hidden="true">
+      <h2 id="gift-title">Hộp quà mừng</h2>
+      <button class="gift-envelope" id="open-gift" aria-expanded="false" aria-controls="bank-details">
+        <span class="gift-composition" aria-hidden="true">
+          <img class="gift-envelope-back" src="assets/minimalism_darkred.webp" alt="">
+          <img class="gift-envelope-front" src="assets/minimalism_darkred.webp" alt="">
+          <svg class="gift-spark gift-spark-left" viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 0 10.5 5.5 16 8l-5.5 2.5L8 16l-2.5-5.5L0 8l5.5-2.5Z"/></svg>
+          <svg class="gift-spark gift-spark-right" viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 0 10.5 5.5 16 8l-5.5 2.5L8 16l-2.5-5.5L0 8l5.5-2.5Z"/></svg>
+        </span>
+        <span class="gift-caption">Nhấn để mở</span>
+      </button>
+      <div id="bank-details" hidden><p class="quiet">Thông tin tài khoản mẫu</p><div id="banks"></div></div>
+    </section>
     <footer><p data-text="closing"></p><div class="footer-names"><span data-text="groom.name"></span> & <span data-text="bride.name"></span></div><p class="footer-date" id="footer-date"></p></footer>
   </main>
   <button id="music" class="music-button" aria-label="Bật nhạc" aria-pressed="false" title="Bật nhạc" hidden>

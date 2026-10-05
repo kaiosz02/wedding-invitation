@@ -11,7 +11,8 @@ window.WEDDING_CONFIG = {
     venue: 'Gia đình nhà trai',
     address: 'Thôn Tân Phát (cũ), Nga An, Thanh Hóa',
     // Để trống: tự tạo liên kết chỉ đường từ địa chỉ trên.
-    mapUrl: '',
+    mapUrl: 'https://maps.app.goo.gl/Eh5hJvKDQdy52J3v5?g_st=ic',
+    mapEmbedUrl: 'https://www.google.com/maps?q=23G6%2B9HV%20Nh%C3%A0%20v%C4%83n%20h%C3%B3a%20T%C3%A2n%20Ph%C3%A1t%2C%20Nga%20An%2C%20Thanh%20H%C3%B3a&ftid=0x313669d5773dd8f3%3A0xceaa671791a016e0&z=17&output=embed',
   },
   photos: {
     cover: 'media/anh/anh8.jpg',
