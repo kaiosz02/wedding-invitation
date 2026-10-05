@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#511419">
   <meta name="description" content="Trân trọng kính mời bạn đến chung vui trong ngày thành hôn của chúng tôi.">
-  <title>Thiệp cưới · Hoàng Long & Bảo Ngọc</title>
+  <title>Thiệp cưới · Nguyễn Quyết & Huyền Trang</title>
   <link rel="stylesheet" href="assets/fonts/fonts.css">
   <link rel="stylesheet" href="style.css">
   <script src="config.js" defer></script>
@@ -57,9 +57,15 @@
     <section class="album section" aria-labelledby="album-title">
       <img class="castle" src="assets/castle-background.webp" alt="" aria-hidden="true">
       <h2 id="album-title">Album ảnh</h2>
-      <div id="album-stage" class="album-stage"></div>
-      <div class="album-controls"><button class="icon-button" id="album-prev" aria-label="Ảnh trước">←</button><span id="album-count" aria-live="polite"></span><button class="icon-button" id="album-next" aria-label="Ảnh tiếp theo">→</button></div>
-      <p class="quiet">Vuốt để xem · Chạm ảnh để phóng to</p>
+      <div class="album-viewer" role="region" aria-roledescription="trình chiếu" aria-label="Album ảnh cưới">
+        <div id="album-stage" class="album-stage"></div>
+        <button class="icon-button album-arrow album-arrow-prev" id="album-prev" aria-label="Ảnh trước"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m14 7-5 5 5 5"/></svg></button>
+        <button class="icon-button album-arrow album-arrow-next" id="album-next" aria-label="Ảnh tiếp theo"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m10 7 5 5-5 5"/></svg></button>
+      </div>
+      <div class="album-controls">
+        <div id="album-dots" class="album-dots" role="group" aria-label="Chọn ảnh"></div>
+        <span id="album-count" class="visually-hidden"></span>
+      </div>
     </section>
     <section class="paper-section" id="reception" aria-labelledby="reception-title">
       <img class="flower flower-left" src="assets/flower2-decoration.webp" alt="">
@@ -70,7 +76,7 @@
         <div class="party-times"><div>Đón khách<strong data-text="reception.welcomeTime"></strong></div><div>Khai tiệc<strong data-text="reception.time"></strong></div></div>
         <div id="calendar" class="calendar"></div>
         <button class="text-button" id="add-calendar">Thêm vào lịch</button>
-        <a class="button cream-button" href="#rsvp">Xác nhận tham dự</a>
+        <button class="button cream-button" id="open-rsvp" type="button" aria-haspopup="dialog" aria-controls="rsvp-dialog">Xác nhận tham dự</button>
       </div>
     </section>
     <section class="location section" aria-labelledby="location-title">
@@ -81,15 +87,56 @@
       <h3 class="dress-heading">Dress code</h3><p>Trang phục dự tiệc</p><div id="dress-code" class="dress-code"></div>
     </section>
     <section class="paper-section" aria-labelledby="timeline-title"><img class="flower flower-right" src="assets/flower2-decoration.webp" alt=""><div class="red-paper"><h2 id="timeline-title">Lịch trình ngày cưới</h2><ol class="timeline" id="timeline"></ol></div></section>
-    <section class="rsvp section" id="rsvp" aria-labelledby="rsvp-title"><h2 id="rsvp-title">Hẹn gặp trong ngày vui</h2><p>Xin dành chút thời gian xác nhận để chúng tôi<br>đón tiếp bạn thật chu đáo.</p>
-      <form id="rsvp-form"><label for="guest-name">Tên của bạn</label><input id="guest-name" name="name" required maxlength="80" autocomplete="name" placeholder="Nhập tên của bạn"><label for="attendance">Bạn sẽ tham dự chứ?</label><select id="attendance" name="attendance"><option value="yes">Tôi sẽ đến chung vui</option><option value="no">Rất tiếc, tôi không thể tham dự</option></select><label for="guest-count">Số người tham dự</label><input id="guest-count" name="count" type="number" min="1" max="20" value="1" required><button class="button" type="submit">Gửi xác nhận</button><p class="form-note" id="rsvp-note"></p><p class="form-status" id="rsvp-status" role="status"></p></form>
+    <section class="guestbook section" aria-labelledby="guestbook-title">
+      <form id="wish-form">
+        <h2 id="guestbook-title">Sổ lưu bút</h2>
+        <label for="wish-name" class="visually-hidden">Tên của bạn</label>
+        <input id="wish-name" required maxlength="80" autocomplete="name" placeholder="Nhập tên*" aria-describedby="wish-note">
+        <label for="wish-message" class="visually-hidden">Lời chúc của bạn</label>
+        <textarea id="wish-message" required maxlength="1000" rows="3" placeholder="Nhập lời chúc*" aria-describedby="wish-note"></textarea>
+        <div class="wish-actions">
+          <button id="suggest-wish" type="button" class="wish-suggestion" aria-label="Gợi ý lời chúc" title="Gợi ý lời chúc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 20 11-11 3 3L7 23zM13 11l3 3M18 2v4m-2-2h4M7 4v4M5 6h4M20 17v4m-2-2h4"/></svg></button>
+          <button type="submit" class="button">Gửi lời chúc</button>
+        </div>
+        <p id="wish-note" class="visually-hidden">Lời chúc được lưu trên trình duyệt này.</p>
+        <p id="wish-status" class="form-status" role="status"></p>
+      </form>
+      <div id="wishes" class="wishes" role="region" aria-label="Lời chúc từ khách mời" tabindex="0"></div>
     </section>
-    <section class="guestbook section" aria-labelledby="guestbook-title"><h2 id="guestbook-title">Sổ lưu bút</h2><p>Một lời chúc, một kỷ niệm thật đẹp.</p><form id="wish-form"><label for="wish-name">Tên của bạn</label><input id="wish-name" required maxlength="80" autocomplete="name" placeholder="Tên người gửi"><label for="wish-message">Lời chúc của bạn</label><textarea id="wish-message" required maxlength="1000" rows="3" placeholder="Gửi đôi lời đến cô dâu và chú rể…"></textarea><button type="submit" class="button">Gửi lời chúc</button><p class="form-note">Lời chúc được lưu trên trình duyệt này.</p><p id="wish-status" class="form-status" role="status"></p></form><div id="wishes" class="wishes"></div></section>
     <section class="gift section" aria-labelledby="gift-title"><h2 id="gift-title">Hộp quà mừng</h2><button class="gift-envelope" id="open-gift" aria-expanded="false" aria-controls="bank-details"><img src="assets/minimalism_darkred.webp" alt=""><span>Nhấn để mở</span></button><div id="bank-details" hidden><p class="quiet">Thông tin tài khoản mẫu</p><div id="banks"></div></div></section>
     <footer><p data-text="closing"></p><div class="footer-names"><span data-text="groom.name"></span> & <span data-text="bride.name"></span></div><p class="footer-date" id="footer-date"></p></footer>
   </main>
-  <button id="music" class="music-button" aria-label="Bật nhạc" hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l11-2v13M9 8l11-2"/><ellipse cx="6" cy="18" rx="3" ry="2"/><ellipse cx="17" cy="16" rx="3" ry="2"/></svg></button>
-  <dialog id="lightbox"><button id="close-lightbox" class="lightbox-close" aria-label="Đóng ảnh">×</button><img id="lightbox-photo" alt="Ảnh cưới phóng to"><div class="lightbox-controls"><button id="lightbox-prev" aria-label="Ảnh trước">←</button><span id="lightbox-count"></span><button id="lightbox-next" aria-label="Ảnh tiếp theo">→</button></div></dialog>
+  <button id="music" class="music-button" aria-label="Bật nhạc" aria-pressed="false" title="Bật nhạc" hidden>
+    <svg class="music-note" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 17V4h5"/><ellipse cx="10.5" cy="17.5" rx="3.5" ry="2.5" fill="currentColor" stroke="none"/></svg>
+    <svg class="music-equalizer" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><rect x="3" y="12" width="3" height="8" rx="1.5"/><rect x="8" y="6" width="3" height="14" rx="1.5"/><rect x="13" y="11" width="3" height="9" rx="1.5"/><rect x="18" y="8" width="3" height="12" rx="1.5"/></svg>
+  </button>
+  <p id="music-status" class="music-status" role="status" hidden></p>
+  <dialog id="rsvp-dialog" aria-labelledby="rsvp-title" aria-describedby="rsvp-description">
+    <button id="close-rsvp" class="rsvp-close" type="button" aria-label="Đóng xác nhận tham dự"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg></button>
+    <h2 id="rsvp-title" tabindex="-1" autofocus>Xác nhận tham dự</h2>
+    <p id="rsvp-description">Sự hiện diện của bạn là niềm vinh hạnh cho gia đình chúng tôi. Xin xác nhận để chúng tôi chuẩn bị chu đáo nhất.</p>
+    <form id="rsvp-form">
+      <label for="guest-name">Tên của bạn</label>
+      <input id="guest-name" name="name" required maxlength="80" autocomplete="name" placeholder="Nhập tên của bạn" aria-describedby="rsvp-note">
+      <fieldset class="rsvp-choices">
+        <legend>Bạn sẽ đến chứ?</legend>
+        <label class="rsvp-choice"><input type="radio" name="attendance" value="yes" required><span class="rsvp-choice-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m6 12 4 4 8-8"/></svg></span><span>Tôi sẽ đến</span></label>
+        <label class="rsvp-choice"><input type="radio" name="attendance" value="no" required><span class="rsvp-choice-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m7 7 10 10M17 7 7 17"/></svg></span><span>Rất tiếc, tôi không thể đến</span></label>
+      </fieldset>
+      <button id="rsvp-submit" class="button" type="submit" disabled>Gửi xác nhận</button>
+      <p id="rsvp-note" class="visually-hidden"></p>
+      <p id="rsvp-status" class="form-status" role="status"></p>
+    </form>
+  </dialog>
+  <dialog id="lightbox" aria-labelledby="lightbox-title">
+    <header class="photo-toolbar"><h2 id="lightbox-title">Album ảnh</h2><span id="lightbox-count" aria-live="polite"></span><button id="close-lightbox" class="lightbox-close" aria-label="Đóng ảnh"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header>
+    <div id="lightbox-image" class="photo-view">
+      <img id="lightbox-photo" alt="Ảnh cưới phóng to">
+      <button id="lightbox-prev" class="photo-arrow photo-arrow-prev" aria-label="Ảnh trước"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg></button>
+      <button id="lightbox-next" class="photo-arrow photo-arrow-next" aria-label="Ảnh tiếp theo"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button>
+    </div>
+    <div id="lightbox-thumbnails" class="photo-thumbnails" role="group" aria-label="Chọn ảnh cưới"></div>
+  </dialog>
   <noscript><p class="noscript">Hãy bật JavaScript để hiển thị nội dung thiệp cưới.</p></noscript>
 </body>
 </html>

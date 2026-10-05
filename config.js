@@ -1,44 +1,41 @@
 // CHỈ CẦN SỬA FILE NÀY. Giữ dấu ngoặc, dấu phẩy và dấu nháy.
-// Tất cả thông tin dưới đây là nội dung mẫu, chưa phải thông tin cưới thật.
+// Thông tin cưới lấy từ thong_tin_dam_cuoi.md và ảnh trong media/anh.
+// Vai vế, giờ đón khách riêng và tài khoản ngân hàng chưa được cung cấp.
 window.WEDDING_CONFIG = {
-  isDemo: true, // Đặt false sau khi thay bằng thông tin thật để ẩn nhãn tài khoản mẫu.
-  groom: { name: 'Hoàng Long', fullName: 'Đặng Hoàng Long', role: 'Trưởng Nam', father: 'Đặng Văn Thắng', mother: 'Bùi Thị Mai', familyAddress: 'Quận 1, TP. Hồ Chí Minh' },
-  bride: { name: 'Bảo Ngọc', fullName: 'Vũ Bảo Ngọc', role: 'Út Nữ', father: 'Vũ Đức Trung', mother: 'Ngô Thị Hạnh', familyAddress: 'Quận 3, TP. Hồ Chí Minh' },
-  ceremony: { date: '2026-01-03', time: '09:00', lunarDate: '15 tháng 11 năm Ất Tỵ', venue: 'Tư gia', address: 'Quận 1, TP. Hồ Chí Minh' },
+  isDemo: false,
+  groom: { name: 'Nguyễn Quyết', fullName: 'Nguyễn Quyết', role: '', father: 'Nguyễn Văn Đức', mother: 'Trần Thị Ngát', familyAddress: 'Thôn Tân Phát (cũ), Nga An, Thanh Hóa' },
+  bride: { name: 'Huyền Trang', fullName: 'Huyền Trang', role: '', father: 'Trần Văn Hoàn', mother: 'Trần Thị Duyên', familyAddress: 'Thôn Tân Phát (cũ), Nga An, Thanh Hóa' },
+  ceremony: { date: '2026-10-11', time: '08:00', lunarDate: '02 tháng 9 năm Bính Ngọ', venue: 'Gia đình nhà trai', address: 'Thôn Tân Phát (cũ), Nga An, Thanh Hóa' },
   reception: {
-    date: '2026-01-03', time: '18:00', welcomeTime: '17:30', lunarDate: '15 tháng 11 năm Ất Tỵ',
-    venue: 'Trung Tâm Hội Nghị White Palace',
-    address: '194 Hoàng Văn Thụ, Phường 9, Quận Phú Nhuận, TP. Hồ Chí Minh',
+    date: '2026-10-11', time: '08:00', welcomeTime: '', lunarDate: '02 tháng 9 năm Bính Ngọ',
+    venue: 'Gia đình nhà trai',
+    address: 'Thôn Tân Phát (cũ), Nga An, Thanh Hóa',
     // Để trống: tự tạo liên kết chỉ đường từ địa chỉ trên.
     mapUrl: '',
   },
   photos: {
-    cover: 'assets/cdecf6cfe2eeb3cfd63829abde62f1066f10a364ec27d4c997c0f51012c8803e.webp',
+    cover: 'media/anh/anh8.jpg',
     album: [
-      'assets/abd329aeb24dfdb5db34be2cd39ccbe4b5b0f943f66a89f8c855b2d615cc4e24.webp',
-      'assets/09c78712bd94460430a8a633a8e72a0576016ea56e183d89d97c551649ee9ece.webp',
-      'assets/d7695e2fed94d3347e78455624c26164a088b3a365bce422de1ef752fdcab2c1.webp',
-      'assets/07db56b959aa4410010132a54bfbedd0518e911389a0c6623b946096377bbb97.webp',
-      'assets/a054d52f9d4d1ed606a4226463f555e359dee874ba7138eab94e10a18b39ddda.webp',
-      'assets/1cfc881768c6a5c42054d40c4239f4f56b59a159692734f3deb8e79fc55499d2.webp',
-      'assets/e13655d0de07f307824d9dd1ad5a399434ebc0c016d86aaa4c1bde7452a4abb1.webp',
+      'media/anh/anh1.jpg',
+      'media/anh/anh2.jpg',
+      'media/anh/anh3.jpg',
+      'media/anh/anh4.jpg',
+      'media/anh/anh5.jpg',
+      'media/anh/anh6.jpg',
+      'media/anh/anh7.jpg',
+      'media/anh/anh8.jpg',
+      'media/anh/anh9.jpg',
     ],
   },
   dressCode: [ { color: '#511419', name: 'Đỏ đô' }, { color: '#8d3c47', name: 'Đỏ hồng' }, { color: '#cba346', name: 'Vàng' }, { color: '#eee5d6', name: 'Kem' } ],
   timeline: [
-    { time: '17:30', title: 'Đón khách', icon: 'assets/camera.webp' },
-    { time: '18:00', title: 'Khai tiệc', icon: 'assets/cake.webp' },
-    { time: '18:30', title: 'Nghi thức cưới', icon: 'assets/cook.webp' },
-    { time: '19:00', title: 'Cắt bánh & nâng ly' },
-    { time: '20:30', title: 'Kết thúc tiệc' },
+    { time: '08:00', title: 'Mừng lễ thành hôn', icon: 'assets/cook.webp' },
   ],
   banks: [
-    // Số tài khoản mẫu. Thay qrImage bằng ảnh QR của chính tài khoản sau khi sửa.
-    // Để trống qrImage thì không hiển thị QR, tránh dùng QR sai tài khoản.
-    { label: 'Chú rể', bank: 'Vietcombank', accountNumber: '1023456789', accountName: 'DANG HOANG LONG', qrImage: '' },
-    { label: 'Cô dâu', bank: 'Techcombank', accountNumber: '9988776655', accountName: 'VU BAO NGOC', qrImage: '' },
+    // Chưa có tài khoản thật. Khi có, thêm theo cấu trúc sau:
+    // { label: 'Chú rể', bank: 'Tên ngân hàng', accountNumber: 'Số tài khoản', accountName: 'Tên chủ tài khoản', qrImage: 'media/qr.png' },
   ],
-  music: { src: '', enabled: false }, // Ví dụ: src: 'media/nhac-cuoi.mp3', enabled: true
+  music: { src: 'media/nhac-cuoi.mp3', enabled: true }, // Nhạc nền từ ui_mau; thay đường dẫn nếu muốn đổi bài.
   // Nếu có dịch vụ nhận RSVP, điền URL endpoint POST JSON tại đây.
   // Khi để trống, xác nhận và lưu bút chỉ được lưu trên trình duyệt khách đang dùng.
   rsvpEndpoint: '',

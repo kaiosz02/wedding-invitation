@@ -1,6 +1,7 @@
 # Trang thiệp cưới
 Mode: Experience. Scope: index.html, style.css, app.js.
 ## Motion thesis
+Before opening: thiệp vào trong 800ms rồi nổi nhẹ 7px theo nhịp 6 giây; hoa hai bên đung đưa, huy hiệu trái tim nhịp đôi và nút mở có vệt sáng thưa. Các chuyển động dừng khi bắt đầu mở hoặc khi chuyển tab; chế độ giảm chuyển động giữ thiệp tĩnh. Khi mở, animation bay tiếp nối đúng vị trí hiện tại của thiệp.
 Focal moment: nhấn vào thiệp kem hoặc nút mở; thiệp lấy đà rồi bay lên, 36 tim nhỏ trên điện thoại / 48 trên máy tính bắn ra quanh thiệp. Continuity: giữ nền mở đầu trong lúc bay, sau khoảng 1 giây mới hòa nền và hiện dần trang chính trong 1,1 giây. Feedback: khóa thao tác lặp ngay khi nhấn, trả focus và cuộn sau khi mở. Budget: SVG và Web Animations API, chỉ transform/opacity, hủy animation và xóa hạt sau 2,15 giây; giảm chuyển động mở thẳng nội dung.
 ## Direction contract
 THESIS: Tái hiện thiệp đỏ đô theo mẫu HTML người dùng cung cấp, đọc theo chiều dọc trên điện thoại.

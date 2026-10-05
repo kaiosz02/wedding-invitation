@@ -24,7 +24,10 @@
     "heartBurst": "pass",
     "delayedReveal": "pass",
     "particleCleanup": "pass",
-    "wholeCardClick": "pass"
+    "wholeCardClick": "pass",
+    "openingIdleMotion": "pass",
+    "openingMotionInterruption": "pass",
+    "openingIdleReducedMotion": "pass"
   },
   "review": {
     "disposition": "ship",

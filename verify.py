@@ -31,7 +31,7 @@ with sync_playwright() as p:
         assert page.locator('#opening-screen').evaluate('(e)=>e.scrollWidth <= e.clientWidth'), f'Opening overflow at {width}'
         assert page.locator('#invitation').is_hidden()
         assert page.locator('#invitation').evaluate('(e)=>e.inert')
-        page.add_style_tag(content='.opening-envelope img{animation:none!important}')
+        page.add_style_tag(content='*{animation:none!important}')
         page.screenshot(path=str(out/f'opening-{name}.png'))
         page.locator('#open-invitation').click()
         page.wait_for_function("document.getElementById('opening-screen').hidden")
@@ -44,13 +44,15 @@ with sync_playwright() as p:
         assert page.evaluate('document.documentElement.scrollWidth <= innerWidth'), f'Overflow at {width}'
         assert page.locator('img').evaluate_all('(imgs)=>imgs.filter(i=>!i.complete || i.naturalWidth===0).map(i=>i.src)') == [], 'Image failed'
     page.set_viewport_size({'width':390,'height':844})
-    page.locator('#album-next').click(); assert page.locator('#album-count').inner_text() == '2 / 7'
+    config = page.evaluate('window.WEDDING_CONFIG')
+    photo_count = len(config['photos']['album'])
+    page.locator('#album-next').click(); assert page.locator('#album-count').inner_text() == f'2 / {photo_count}'
     page.locator('.album-photo').nth(1).click(); assert page.locator('#lightbox').evaluate('(d)=>d.open')
-    page.keyboard.press('ArrowRight'); assert page.locator('#lightbox-count').inner_text() == '3 / 7'
+    page.keyboard.press('ArrowRight'); assert page.locator('#lightbox-count').inner_text() == f'3 / {photo_count}'
     page.keyboard.press('Escape'); assert not page.locator('#lightbox').evaluate('(d)=>d.open')
-    page.locator('#guest-name').fill('Khach thu nghiem'); page.locator('#rsvp-form button').click()
+    page.locator('#open-rsvp').click(); page.locator('#guest-name').fill('Khach thu nghiem'); page.locator('.rsvp-choice').first.click(); page.locator('#rsvp-submit').click()
     assert 'trình duyệt' in page.locator('#rsvp-status').inner_text()
-    page.locator('#attendance').select_option('no'); assert page.locator('#guest-count').is_disabled()
+    page.locator('.rsvp-choice').nth(1).click(); assert page.locator('input[name=attendance][value=no]').is_checked(); page.locator('#close-rsvp').click()
     page.locator('#wish-name').fill('Khach thu nghiem'); page.locator('#wish-message').fill('Chuc mung ngay vui!'); page.locator('#wish-form button').click()
     assert 'Chuc mung ngay vui!' in page.locator('#wishes').inner_text()
     page.reload(); assert 'Chuc mung ngay vui!' in page.locator('#wishes').inner_text()
@@ -62,12 +64,15 @@ with sync_playwright() as p:
     page.locator('#open-gift').click(); assert page.locator('#bank-details').is_visible()
     with page.expect_download() as info: page.locator('#add-calendar').click()
     path = info.value.path(); text = Path(path).read_text(encoding='utf-8')
-    assert 'DTSTART:20260103T110000Z' in text
+    from datetime import datetime, timezone
+    start = datetime.fromisoformat(config['reception']['date'] + 'T' + config['reception']['time'] + ':00+07:00')
+    assert 'DTSTART:' + start.astimezone(timezone.utc).strftime('%Y%m%dT%H%M%SZ') in text
     page.goto(Path('index.html').resolve().as_uri())
     assert page.locator('#invitation').is_hidden()
     page.locator('#open-invitation').focus(); page.keyboard.press('Enter')
     page.wait_for_function("document.getElementById('opening-screen').hidden")
-    assert page.locator('h1').inner_text().find('Hoàng Long')>=0
+    assert config['groom']['name'] in page.locator('h1').inner_text()
+    assert config['bride']['name'] in page.locator('h1').inner_text()
     assert errors == [], errors
     print(json.dumps({'viewports':[320,390,1440], 'overflow':False,'brokenImages':False,'errors':errors,'album':'pass','lightbox':'pass','rsvp':'pass','guestbook':'pass','gift':'pass','calendar':'pass','fileProtocol':'pass'}, ensure_ascii=False))
     browser.close()

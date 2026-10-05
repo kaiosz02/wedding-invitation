@@ -160,6 +160,8 @@ Paper panels have softly rounded corners. Inputs and standard actions have small
 
 ### Buttons
 
+The fixed music control sits at the lower right with safe-area spacing. Its cream record icon rotates during playback and displays a diagonal mute stroke while paused. The button has a stateful accessible label and pressed state; reduced motion stops rotation. Playback begins only after the visitor opens the invitation or presses the control.
+
 Primary buttons are burgundy with cream lettering, the frontmatter padding, and a minimum height of 46px. Hover shifts to the recorded lighter burgundy. The cream RSVP action reverses the colors, has pill corners and a maximum width of 270px. The calendar download action is a restrained underlined text button. Keyboard focus uses a 2px warm brown outline offset by 5px; disabled buttons reduce opacity and use a wait cursor.
 
 ### Cards / Containers
@@ -175,6 +177,8 @@ Inputs, selects and textareas use warm pale stock, burgundy text, a translucent 
 The cover combines a tilted bordered portrait, floral cutout and two envelope layers. The album uses rounded photographic cards, a perspective stage and soft shadows. Arrow controls provide generous 44px targets; enlarged images open against a dark full-viewport backdrop.
 
 ### Opening Screen
+
+Before opening, the card arrives over 800ms and floats upward by 7px on a six-second cycle. Flowers sway by 1.5 degrees, the heart seal gives a subtle double beat and the button carries an occasional light sweep. These loops pause in background tabs, stop when the card launches and are disabled under reduced-motion preferences. The launch samples the card's current transform to preserve continuity.
 
 The initial screen follows the supplied reference image: a deep burgundy gradient field with sparse drifting heart SVGs and a centered cream invitation card (500px wide, at least 350px high). Mirrored floral cutouts flank configured names, with a round heart seal, a small divider, reception date and the greeting above a burgundy pill button. The card shrinks within 16px side margins on phones. Clicking “Mở thiệp” launches the card upward over 850ms while 36 mobile or 48 desktop hearts burst from its center. After a 200ms pause, the cover and main page crossfade over 1100ms. The sequence uses the Web Animations API and removes particles and animation handles at completion. Main content remains hidden and inert until opening; scrolling and focus become available after the transition. Reduced motion skips the transition and heart animation. The card reappears on each page load.
 

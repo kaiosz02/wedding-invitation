@@ -13,4 +13,4 @@ Album ảnh, xem ảnh lớn, tải lịch ICS, chỉ đường, xác nhận tha
 ## Brand Commitments
 Bám sát mẫu HTML ui_mau: đỏ đậm, font chữ, hình trang trí, bố cục và hiệu ứng. Dùng nội dung mẫu khi chưa có thông tin thật.
 ## Evidence on Hand
-Mẫu HTML và ảnh trong ui_mau. media hiện chưa có nội dung. Nội dung cá nhân thật chưa được cung cấp.
+Mẫu HTML và ảnh trang trí trong ui_mau. Thông tin cá nhân lấy từ thong_tin_dam_cuoi.md; ảnh thiệp gốc nằm trong media/tt_gia_dinh; 9 ảnh cặp đôi nằm trong media/anh. Nguyễn Quyết và Huyền Trang tổ chức lễ thành hôn lúc 08:00 ngày 11/10/2026 tại gia đình nhà trai, Thôn Tân Phát (cũ), Nga An, Thanh Hóa. Chưa có tài khoản ngân hàng, vai vế và giờ đón khách riêng.

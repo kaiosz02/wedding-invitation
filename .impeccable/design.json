@@ -95,6 +95,11 @@
         "name": "opening-hearts",
         "value": "12?16s ease-in-out infinite",
         "purpose": "Sparse burgundy, cream and gold hearts drift behind the opening card; reduced motion disables this."
+      },
+      {
+        "name": "opening-idle",
+        "value": "800ms arrival; 6s card float/floral sway; 3.6s heartbeat; 6s button sheen",
+        "purpose": "Invitation waits with subtle coordinated movement. CSS loops pause in background tabs, stop during flight, and are disabled with reduced motion. Flight starts from the current computed transform."
       }
     ],
     "breakpoints": [

@@ -1,0 +1,26 @@
+{
+  "viewports": [
+    320,
+    390,
+    600,
+    1440
+  ],
+  "autoplayIntervalMs": 3500,
+  "autoplay": "pass",
+  "pause": "pass",
+  "dots": "pass",
+  "lightbox": "pass",
+  "reducedMotion": "pass",
+  "swipeHandlers": "pass",
+  "wraparound": "pass",
+  "overflow": false,
+  "brokenAlbumImages": false,
+  "jsErrors": [],
+  "responsiveArrows": "pass",
+  "reference": "original ui_mau HTML",
+  "transitionMs": 1100,
+  "stageHeight": {
+    "mobile": 340,
+    "desktop": 520
+  }
+}

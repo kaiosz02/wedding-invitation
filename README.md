@@ -6,6 +6,8 @@ Khi vào hoặc tải lại trang, thiệp kem với hoa hai bên xuất hiện 
 
 Có thể nhấn trực tiếp vào thiệp: thiệp bay lên và các trái tim nhỏ bắn ra, sau đó trang chính hiện dần. Toàn bộ chuyển cảnh kéo dài khoảng 2,15 giây.
 
+Trước khi mở, thiệp xuất hiện mềm mại rồi nổi nhẹ; hoa hai bên đung đưa, trái tim nhịp nhẹ và nút mở có vệt sáng định kỳ. Chuyển động tạm dừng khi chuyển tab và được tắt nếu thiết bị bật giảm chuyển động.
+
 Có thể xem qua máy chủ tại **http://127.0.0.1:8000/**. Nếu máy chủ chưa chạy, mở PowerShell trong thư mục này và chạy:
 
 ```powershell
@@ -24,9 +26,12 @@ Sau khi điền thông tin thật, đặt `isDemo: false` để ẩn nhãn tài 
 - `timeline`, `dressCode`: lịch trình và màu trang phục.
 - `banks`: ngân hàng, số tài khoản, tên chủ tài khoản và `qrImage`. Chép QR thật vào `media` rồi điền đường dẫn. QR được để trống mặc định vì mẫu gốc có QR của tên khác.
 - `music`: điền tệp nhạc trong `media`, đặt `enabled: true`. Nhạc chỉ phát khi khách nhấn nút.
+- Đã bật nhạc nền từ mẫu bằng `media/nhac-cuoi.mp3`. Khi khách mở thiệp, nhạc bắt đầu; biểu tượng đĩa nhạc ở góc dưới phải dùng để tắt hoặc bật lại. Có thể đổi bài bằng `music.src`, hoặc tắt tính năng bằng `music.enabled: false`.
 - `closing`, `guestbook`: lời cảm ơn và lời chúc mẫu.
 
-Toàn bộ nội dung hiện là **nội dung mẫu** lấy từ HTML được cung cấp. Ngày mẫu 03/01/2026 được giữ nguyên, hãy thay trước khi sử dụng thực tế. Giờ mặc định dùng múi giờ Việt Nam (UTC+7).
+Thông tin chính đã cập nhật từ **thong_tin_dam_cuoi.md**: Nguyễn Quyết và Huyền Trang, 08:00 Chủ nhật 11/10/2026 (02/9 năm Bính Ngọ), tại gia đình nhà trai ở Thôn Tân Phát (cũ), Nga An, Thanh Hóa. Hai gia đình cũng đã cập nhật. Ảnh bìa dùng `media/anh/anh8.jpg`; album có 9 ảnh trong `media/anh`. Giờ dùng múi giờ Việt Nam (UTC+7).
+
+Vai vế, giờ đón khách riêng và tài khoản ngân hàng chưa được cung cấp nên để trống; lịch trình hiện chỉ có mốc 08:00 đã xác nhận. Dress code và lời chúc ban đầu vẫn là nội dung mẫu, có thể sửa trong cấu hình. Liên kết chỉ đường tìm theo địa chỉ; chưa có tọa độ hoặc liên kết ghim chính xác.
 
 ## Xác nhận và lưu bút
 

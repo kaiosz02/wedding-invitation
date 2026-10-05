@@ -8,6 +8,8 @@
   document.querySelectorAll('[data-text]').forEach(el => {
     el.textContent = el.dataset.text.split('.').reduce((v, k) => v?.[k], c) ?? '';
   });
+  document.querySelectorAll('[data-text="groom.role"], [data-text="bride.role"]').forEach(el => { el.hidden = !el.textContent.trim(); });
+  if (!c.reception.welcomeTime) document.querySelector('[data-text="reception.welcomeTime"]').parentElement.hidden = true;
   const element = (tag, text, className) => { const e = document.createElement(tag); if (text != null) e.textContent = text; if (className) e.className = className; return e; };
   const dateParts = event => {
     const [year, month, day] = event.date.split('-').map(Number);
@@ -51,66 +53,128 @@
   c.timeline.forEach(item => { const li = element('li'); li.append(element('time', item.time), element('span', item.title)); if (item.icon) { const img = element('img'); img.src = item.icon; img.alt = ''; img.loading = 'lazy'; li.append(img); } $('timeline').append(li); });
 
   let index = 0;
-  const photos = c.photos.album, cards = [];
+  const photos = c.photos.album, cards = [], dots = [], thumbnails = [];
+  const album = document.querySelector('.album'), motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let albumTimer, albumVisible = false;
   photos.forEach((src, i) => {
     const button = element('button', null, 'album-photo'), img = element('img');
     button.type = 'button'; button.setAttribute('aria-label', `Mở ảnh cưới ${i + 1}`);
     img.src = src; img.alt = `Ảnh cưới ${i + 1} của ${c.groom.name} và ${c.bride.name}`; img.loading = 'lazy';
     button.append(img); $('album-stage').append(button); cards.push(button);
-    button.addEventListener('click', () => { if (i !== index) { index = i; renderAlbum(); } else { renderLightbox(); $('lightbox').showModal(); } });
+    button.addEventListener('click', () => {
+      if (performance.now() - lastAlbumSwipe < 350) return;
+      index = i; renderAlbum(); $('lightbox').showModal(); document.body.classList.add('photo-open'); syncAlbumPlayback();
+    });
+    const dot = element('button', null, 'album-dot');
+    dot.type = 'button'; dot.setAttribute('aria-label', `Xem ảnh ${i + 1}`);
+    dot.addEventListener('click', () => { index = i; renderAlbum(); syncAlbumPlayback(); });
+    $('album-dots').append(dot); dots.push(dot);
+    const thumbnail = element('button', null, 'photo-thumbnail'), preview = element('img');
+    thumbnail.type = 'button'; thumbnail.setAttribute('aria-label', `Xem ảnh cưới ${i + 1}`);
+    preview.src = src; preview.alt = ''; preview.loading = 'lazy'; thumbnail.append(preview);
+    thumbnail.onclick = () => { index = i; renderAlbum(); syncAlbumPlayback(); };
+    $('lightbox-thumbnails').append(thumbnail); thumbnails.push(thumbnail);
   });
   function renderAlbum() {
     const n = photos.length;
     cards.forEach((card, i) => {
       let diff = (i - index + n) % n; if (diff > n / 2) diff -= n;
-      card.style.transform = `translateX(calc(-50% + ${diff * 60}%)) translateZ(${-Math.abs(diff) * 150}px) rotateY(${diff * 45}deg) scale(${Math.abs(diff) ? Math.max(.7, 1 - Math.abs(diff) * .15) : 1})`;
-      card.style.opacity = Math.abs(diff) > 2 ? '0' : String(1 - Math.abs(diff) * .25);
+      const depth = Math.abs(diff);
+      card.style.transform = `translateX(${diff * 60}%) translateZ(${-depth * 150}px) rotateY(${diff * 45}deg) scale(${depth ? Math.max(.7, 1 - depth * .15) : 1})`;
+      card.style.opacity = String([1, .75, .5, .3][depth] ?? 0);
       card.style.zIndex = String(100 - Math.abs(diff)); card.tabIndex = diff === 0 ? 0 : -1;
-      card.style.pointerEvents = Math.abs(diff) > 1 ? 'none' : 'auto';
+      card.style.pointerEvents = depth > 3 ? 'none' : 'auto';
+      card.setAttribute('aria-hidden', String(depth > 3));
+      dots[i].setAttribute('aria-current', String(depth === 0));
     });
     $('album-count').textContent = `${n ? index + 1 : 0} / ${n}`;
     $('album-prev').disabled = $('album-next').disabled = n < 2;
     renderLightbox();
   }
-  function renderLightbox() { if (photos.length) $('lightbox-photo').src = photos[index]; $('lightbox-count').textContent = `${index + 1} / ${photos.length}`; }
-  function step(delta) { if (!photos.length) return; index = (index + delta + photos.length) % photos.length; renderAlbum(); }
+  function renderLightbox() {
+    if (photos.length) { $('lightbox-photo').src = photos[index]; $('lightbox-photo').alt = `Ảnh cưới ${index + 1} của ${c.groom.name} và ${c.bride.name}`; }
+    $('lightbox-count').textContent = `${index + 1} / ${photos.length}`;
+    thumbnails.forEach((thumbnail, i) => thumbnail.setAttribute('aria-current', String(i === index)));
+    if ($('lightbox').open) thumbnails[index]?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }
+  function step(delta) { if (!photos.length) return; index = (index + delta + photos.length) % photos.length; renderAlbum(); syncAlbumPlayback(); }
+  function syncAlbumPlayback() {
+    clearTimeout(albumTimer);
+    if (photos.length < 2 || motionPreference.matches || !albumVisible || document.hidden || $('lightbox').open) return;
+    albumTimer = setTimeout(() => step(1), 2200);
+  }
+  new IntersectionObserver(entries => { albumVisible = entries[0].isIntersecting; syncAlbumPlayback(); }, { threshold: .35 }).observe(album);
+  document.addEventListener('visibilitychange', syncAlbumPlayback);
+  $('lightbox').addEventListener('close', () => { document.body.classList.remove('photo-open'); cards[index]?.focus({ preventScroll: true }); syncAlbumPlayback(); });
+  motionPreference.addEventListener('change', syncAlbumPlayback);
   $('album-prev').onclick = $('lightbox-prev').onclick = () => step(-1);
   $('album-next').onclick = $('lightbox-next').onclick = () => step(1);
   $('close-lightbox').onclick = () => $('lightbox').close();
   $('lightbox').addEventListener('keydown', e => { if (e.key === 'ArrowRight') step(1); if (e.key === 'ArrowLeft') step(-1); });
   $('lightbox').addEventListener('click', e => { if (e.target === $('lightbox')) $('lightbox').close(); });
-  let touchStart;
+  let touchStart, lastAlbumSwipe = -Infinity;
   $('album-stage').addEventListener('touchstart', e => { touchStart = e.changedTouches[0].clientX; }, { passive: true });
-  $('album-stage').addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - touchStart; if (Math.abs(dx) > 45) step(dx < 0 ? 1 : -1); }, { passive: true });
+  $('album-stage').addEventListener('touchend', e => { const dx = e.changedTouches[0].clientX - touchStart; if (Math.abs(dx) > 45) { lastAlbumSwipe = performance.now(); step(dx < 0 ? 1 : -1); } }, { passive: true });
+  let photoTouch;
+  $('lightbox-image').addEventListener('touchstart', e => { photoTouch = e.changedTouches[0]; }, { passive: true });
+  $('lightbox-image').addEventListener('touchend', e => { const touch = e.changedTouches[0], dx = touch.clientX - photoTouch.clientX, dy = touch.clientY - photoTouch.clientY; if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1); }, { passive: true });
   renderAlbum();
+  syncAlbumPlayback();
 
   const namespace = `wedding:${c.groom.fullName}:${c.bride.fullName}:${c.reception.date}`;
   function read(key) { try { return JSON.parse(localStorage.getItem(`${namespace}:${key}`)) || []; } catch { return []; } }
   function save(key, value) { localStorage.setItem(`${namespace}:${key}`, JSON.stringify(value)); }
   $('rsvp-note').textContent = c.rsvpEndpoint ? 'Xác nhận sẽ được gửi đến cô dâu và chú rể.' : 'Bản xem thử: xác nhận chỉ lưu trên trình duyệt này, chưa gửi đến cô dâu chú rể.';
-  $('attendance').onchange = () => { const absent = $('attendance').value === 'no'; $('guest-count').disabled = absent; $('guest-count').required = !absent; };
+  let rsvpSaving = false;
+  function updateRsvpSubmit() { $('rsvp-submit').disabled = rsvpSaving || !$('guest-name').value.trim() || !$('rsvp-form').querySelector('input[name="attendance"]:checked'); }
+  $('rsvp-form').addEventListener('input', updateRsvpSubmit);
+  $('rsvp-form').addEventListener('change', updateRsvpSubmit);
+  $('open-rsvp').onclick = () => { updateRsvpSubmit(); $('rsvp-dialog').showModal(); document.body.classList.add('rsvp-open'); };
+  $('close-rsvp').onclick = () => $('rsvp-dialog').close();
+  $('rsvp-dialog').addEventListener('close', () => { document.body.classList.remove('rsvp-open'); $('open-rsvp').focus({ preventScroll: true }); });
+  $('rsvp-dialog').addEventListener('click', e => {
+    const rect = $('rsvp-dialog').getBoundingClientRect();
+    if (e.target === $('rsvp-dialog') && (e.clientX < rect.left || e.clientX > rect.right || e.clientY < rect.top || e.clientY > rect.bottom)) $('rsvp-dialog').close();
+  });
   $('rsvp-form').onsubmit = async e => {
-    e.preventDefault(); const btn = e.target.querySelector('button'), name = $('guest-name').value.trim();
+    e.preventDefault(); const btn = $('rsvp-submit'), name = $('guest-name').value.trim(), attendance = e.target.querySelector('input[name="attendance"]:checked')?.value;
     if (!name) { $('rsvp-status').textContent = 'Vui lòng nhập tên của bạn.'; return; }
-    const record = { name, attendance: $('attendance').value, count: $('attendance').value === 'no' ? 0 : Number($('guest-count').value), createdAt: new Date().toISOString() };
-    btn.disabled = true; $('rsvp-status').textContent = 'Đang lưu xác nhận…';
+    if (!attendance || rsvpSaving) return;
+    const record = { name, attendance, count: attendance === 'yes' ? 1 : 0, createdAt: new Date().toISOString() };
+    rsvpSaving = true; btn.disabled = true; $('rsvp-status').textContent = 'Đang lưu xác nhận…';
     try {
       if (c.rsvpEndpoint) { const res = await fetch(c.rsvpEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(record) }); if (!res.ok) throw new Error('network'); }
       else save('rsvp', [...read('rsvp'), record]);
       $('rsvp-status').textContent = c.rsvpEndpoint ? 'Cảm ơn bạn! Xác nhận đã được gửi.' : 'Đã lưu xác nhận trên trình duyệt này. Cảm ơn bạn!';
     } catch { $('rsvp-status').textContent = 'Chưa lưu được xác nhận. Vui lòng thử lại hoặc liên hệ trực tiếp cô dâu chú rể.'; }
-    finally { btn.disabled = false; }
+    finally { rsvpSaving = false; updateRsvpSubmit(); }
   };
   function renderWishes() {
-    $('wishes').replaceChildren(); [...read('wishes').reverse(), ...c.guestbook].slice(0, 50).forEach(w => { const item = element('article', null, 'wish'); item.append(element('strong', w.name), element('p', w.message)); $('wishes').append(item); });
+    $('wishes').replaceChildren();
+    [...read('wishes').reverse(), ...c.guestbook].slice(0, 50).forEach(w => {
+      const item = element('article', null, 'wish'), header = element('div', null, 'wish-header');
+      header.append(element('strong', w.name));
+      if (w.createdAt && !Number.isNaN(Date.parse(w.createdAt))) {
+        const date = new Date(w.createdAt), time = element('time');
+        time.dateTime = date.toISOString();
+        time.textContent = `${date.toLocaleTimeString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour12: false })} ${date.toLocaleDateString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh' })}`;
+        header.append(time);
+      }
+      item.append(header, element('p', w.message)); $('wishes').append(item);
+    });
+    if (!$('wishes').childElementCount) $('wishes').append(element('p', 'Hãy là người đầu tiên gửi lời chúc đến cô dâu và chú rể.', 'wish-empty'));
   }
+  const suggestedWishes = ['Chúc hai bạn trăm năm hạnh phúc, luôn yêu thương và đồng hành cùng nhau!', 'Chúc mừng ngày vui! Chúc gia đình nhỏ luôn đầy ắp tiếng cười và yêu thương.', 'Chúc cô dâu chú rể một đời bình an, hạnh phúc và mãi bên nhau.'];
+  let suggestionIndex = 0;
+  $('suggest-wish').onclick = () => { $('wish-message').value = suggestedWishes[suggestionIndex++ % suggestedWishes.length]; $('wish-message').focus(); };
   $('wish-form').onsubmit = e => {
     e.preventDefault(); const name = $('wish-name').value.trim(), message = $('wish-message').value.trim();
     if (!name || !message) { $('wish-status').textContent = 'Vui lòng nhập tên và lời chúc.'; return; }
-    try { save('wishes', [...read('wishes'), { name, message }]); renderWishes(); $('wish-message').value = ''; $('wish-status').textContent = 'Cảm ơn lời chúc của bạn! Đã lưu trên trình duyệt này.'; }
+    try { save('wishes', [...read('wishes'), { name, message, createdAt: new Date().toISOString() }]); renderWishes(); $('wishes').scrollTop = 0; $('wish-message').value = ''; $('wish-status').textContent = 'Cảm ơn lời chúc của bạn! Đã lưu trên trình duyệt này.'; }
     catch { $('wish-status').textContent = 'Trình duyệt chưa cho phép lưu. Vui lòng thử lại.'; }
   };
   renderWishes();
+  if (!c.banks.length) $('banks').append(element('p', 'Thông tin mừng cưới sẽ được gia đình cập nhật sau.', 'quiet'));
   c.banks.forEach(bank => {
     const item = element('article', null, 'bank'); item.append(element('h3', bank.label), element('p', bank.bank), element('strong', bank.accountNumber, 'account-number'), element('p', bank.accountName));
     if (bank.qrImage) { const img = element('img'); img.src = bank.qrImage; img.alt = `Mã QR tài khoản ${bank.label}`; const link = element('a', 'Lưu ảnh QR'); link.href = bank.qrImage; link.download = `QR-${bank.label}.png`; item.append(img, link); }
@@ -126,9 +190,35 @@
     const content = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Thiep Cuoi//VI', 'BEGIN:VEVENT', `UID:${c.reception.date}-${encodeURIComponent(c.groom.name)}@thiep-cuoi.local`, `DTSTAMP:${stamp(new Date())}`, `DTSTART:${stamp(start)}`, `DTEND:${stamp(end)}`, `SUMMARY:${icsEscape(`Lễ cưới ${c.groom.name} & ${c.bride.name}`)}`, `LOCATION:${icsEscape(c.reception.venue + ', ' + c.reception.address)}`, 'END:VEVENT', 'END:VCALENDAR', ''].join('\r\n');
     const url = URL.createObjectURL(new Blob([content], { type: 'text/calendar;charset=utf-8' })), link = element('a'); link.href = url; link.download = 'lich-tiec-cuoi.ics'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
-  if (c.music.enabled && c.music.src) { const audio = new Audio(c.music.src); audio.loop = true; $('music').hidden = false; $('music').onclick = async () => { if (!audio.paused) { audio.pause(); $('music').setAttribute('aria-label', 'Bật nhạc'); } else { try { await audio.play(); $('music').setAttribute('aria-label', 'Tắt nhạc'); } catch { $('music').setAttribute('aria-label', 'Không mở được nhạc, nhấn để thử lại'); } } }; }
+  if (c.music.enabled && c.music.src) {
+    const audio = new Audio(c.music.src), button = $('music');
+    audio.loop = true; audio.preload = 'metadata'; button.hidden = false;
+    function syncMusic() {
+      const playing = !audio.paused;
+      button.classList.toggle('is-playing', playing);
+      button.setAttribute('aria-pressed', String(playing));
+      button.setAttribute('aria-label', playing ? 'Tắt nhạc' : 'Bật nhạc');
+      button.title = playing ? 'Tắt nhạc' : 'Bật nhạc';
+    }
+    audio.addEventListener('play', syncMusic);
+    audio.addEventListener('pause', syncMusic);
+    button.onclick = async () => {
+      $('music-status').hidden = true;
+      if (!audio.paused) { audio.pause(); return; }
+      button.disabled = true;
+      try { await audio.play(); }
+      catch {
+        syncMusic();
+        $('music-status').textContent = 'Chưa phát được nhạc. Nhấn nút nhạc để thử lại.';
+        $('music-status').hidden = false;
+      } finally { button.disabled = false; }
+    };
+  }
   const opening = $('opening-screen'), openButton = $('open-invitation');
   const openingCard = opening.querySelector('.opening-content');
+  document.addEventListener('visibilitychange', () => {
+    opening.classList.toggle('opening-motion-paused', document.hidden);
+  });
   openingCard.addEventListener('click', async () => {
     if (openButton.disabled) return;
     openButton.disabled = true;
@@ -155,10 +245,13 @@
     const settled = animation => animation.finished.catch(() => {});
     try {
       const rect = openingCard.getBoundingClientRect();
+      const restingStyle = getComputedStyle(openingCard);
+      const restingTransform = restingStyle.transform;
+      const restingOpacity = restingStyle.opacity;
       opening.append(particles);
       opening.classList.add('is-opening');
       const flight = openingCard.animate([
-        { transform: 'translateY(0) rotate(0deg) scale(1)', opacity: 1 },
+        { transform: restingTransform, opacity: restingOpacity },
         { transform: 'translateY(-22px) rotate(-2deg) scale(1.025)', opacity: 1, offset: .22 },
         { transform: `translateY(-${rect.bottom + 100}px) rotate(-9deg) scale(.82)`, opacity: 0 },
       ], { duration: 850, easing: 'cubic-bezier(.55,.06,.68,.19)', fill: 'forwards' });
