@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#511419">
   <meta name="description" content="Trân trọng kính mời bạn đến chung vui trong ngày thành hôn của chúng tôi.">
   <title>Thiệp cưới · Nguyễn Quyết & Huyền Trang</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <link rel="stylesheet" href="assets/fonts/fonts.css">
   <link rel="stylesheet" href="style.css">
   <script src="config.js" defer></script>
@@ -99,24 +100,10 @@
           <button id="suggest-wish" type="button" class="wish-suggestion" aria-label="Gợi ý lời chúc" title="Gợi ý lời chúc"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 20 11-11 3 3L7 23zM13 11l3 3M18 2v4m-2-2h4M7 4v4M5 6h4M20 17v4m-2-2h4"/></svg></button>
           <button type="submit" class="button">Gửi lời chúc</button>
         </div>
-        <p id="wish-note" class="visually-hidden">Lời chúc được lưu trên trình duyệt này.</p>
+        <p id="wish-note" class="visually-hidden">Lời chúc được lưu vào sổ lưu bút chung và hiển thị cho khách mời.</p>
         <p id="wish-status" class="form-status" role="status"></p>
       </form>
       <div id="wishes" class="wishes" role="region" aria-label="Lời chúc từ khách mời" tabindex="0"></div>
-    </section>
-    <section class="gift section" aria-labelledby="gift-title">
-      <img class="castle" src="assets/castle-background.webp" alt="" aria-hidden="true">
-      <h2 id="gift-title">Hộp quà mừng</h2>
-      <button class="gift-envelope" id="open-gift" aria-expanded="false" aria-controls="bank-details">
-        <span class="gift-composition" aria-hidden="true">
-          <img class="gift-envelope-back" src="assets/minimalism_darkred.webp" alt="">
-          <img class="gift-envelope-front" src="assets/minimalism_darkred.webp" alt="">
-          <svg class="gift-spark gift-spark-left" viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 0 10.5 5.5 16 8l-5.5 2.5L8 16l-2.5-5.5L0 8l5.5-2.5Z"/></svg>
-          <svg class="gift-spark gift-spark-right" viewBox="0 0 16 16" width="12" height="12" fill="currentColor"><path d="M8 0 10.5 5.5 16 8l-5.5 2.5L8 16l-2.5-5.5L0 8l5.5-2.5Z"/></svg>
-        </span>
-        <span class="gift-caption">Nhấn để mở</span>
-      </button>
-      <div id="bank-details" hidden><p class="quiet">Thông tin tài khoản mẫu</p><div id="banks"></div></div>
     </section>
     <footer><p data-text="closing"></p><div class="footer-names"><span data-text="groom.name"></span> & <span data-text="bride.name"></span></div><p class="footer-date" id="footer-date"></p></footer>
   </main>

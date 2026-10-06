@@ -8,6 +8,8 @@ Có thể nhấn trực tiếp vào thiệp: thiệp bay lên và các trái tim
 
 Trước khi mở, thiệp xuất hiện mềm mại rồi nổi nhẹ; hoa hai bên đung đưa, trái tim nhịp nhẹ và nút mở có vệt sáng định kỳ. Chuyển động tạm dừng khi chuyển tab và được tắt nếu thiết bị bật giảm chuyển động.
 
+Sau khi mở, các phần thông tin, album, địa điểm, lịch trình, sổ lưu bút và lời cảm ơn hiện dần khi cuộn tới. Mỗi phần chạy một lần trong 1000–1150ms với độ dịch chuyển 14–20px; khi dùng bàn phím để vào phần đó, nội dung hiển thị ngay. Chế độ giảm chuyển động bỏ qua hiệu ứng này. Nội dung không bị ẩn bằng CSS nếu hiệu ứng không chạy.
+
 Có thể xem qua máy chủ tại **http://127.0.0.1:8000/**. Nếu máy chủ chưa chạy, mở PowerShell trong thư mục này và chạy:
 
 ```powershell
@@ -27,7 +29,7 @@ Sau khi điền thông tin thật, đặt `isDemo: false` để ẩn nhãn tài 
 - `banks`: ngân hàng, số tài khoản, tên chủ tài khoản và `qrImage`. Chép QR thật vào `media` rồi điền đường dẫn. QR được để trống mặc định vì mẫu gốc có QR của tên khác.
 - `music`: điền tệp nhạc trong `media`, đặt `enabled: true`. Nhạc chỉ phát khi khách nhấn nút.
 - Đã bật nhạc nền từ mẫu bằng `media/nhac-cuoi.mp3`. Khi khách mở thiệp, nhạc bắt đầu; biểu tượng đĩa nhạc ở góc dưới phải dùng để tắt hoặc bật lại. Có thể đổi bài bằng `music.src`, hoặc tắt tính năng bằng `music.enabled: false`.
-- `closing`, `guestbook`: lời cảm ơn và lời chúc mẫu.
+- `closing`: lời cảm ơn. Danh sách lời chúc chỉ đọc từ Google Sheets.
 
 Thông tin chính đã cập nhật từ **thong_tin_dam_cuoi.md**: Nguyễn Quyết và Huyền Trang, 08:00 Chủ nhật 11/10/2026 (02/9 năm Bính Ngọ), tại gia đình nhà trai ở Thôn Tân Phát (cũ), Nga An, Thanh Hóa. Hai gia đình cũng đã cập nhật. Ảnh bìa dùng `media/anh/anh8.jpg`; album có 9 ảnh trong `media/anh`. Giờ dùng múi giờ Việt Nam (UTC+7).
 
@@ -35,9 +37,15 @@ Vai vế, giờ đón khách riêng và tài khoản ngân hàng chưa được 
 
 ## Xác nhận và lưu bút
 
-Trang tĩnh không có máy chủ thu thập dữ liệu. Mặc định, xác nhận và lời chúc chỉ lưu trong trình duyệt khách đang dùng, không gửi đến chủ thiệp hoặc đồng bộ giữa các máy. Giao diện ghi rõ điều này.
+Sổ lưu bút đã cấu hình `guestbookEndpoint` để gửi lời chúc tới Google Apps Script. Script nhận biểu mẫu POST gồm `name` và `message`, ghi vào tab `LoiChuc` của Google Sheets. Triển khai dưới dạng Web app, thực thi với tư cách chủ file và cho phép Anyone truy cập. ID bắt đầu bằng `AKfy...` là ID triển khai; `SHEET_ID` trong Apps Script phải là ID bảng tính lấy từ link Google Sheets, không phải ID triển khai.
 
-Nếu có dịch vụ nhận xác nhận, đặt `rsvpEndpoint` thành URL endpoint chấp nhận POST JSON gồm `name`, `attendance` (`yes`/`no`), `count`, `createdAt`. Dịch vụ cần cho phép CORS từ trang thiệp. Lưu bút vẫn lưu cục bộ.
+Trang gửi bằng `no-cors` để tương thích Apps Script từ website tĩnh. Trình duyệt không đọc được phản hồi, vì vậy trạng thái “Đã gửi yêu cầu lưu lời chúc” chưa xác nhận ghi Sheet thành công. Kiểm tra bằng cách gửi một lời chúc thử rồi mở tab `LoiChuc`; nếu không có dòng mới, xem Executions trong Apps Script và kiểm tra `SHEET_ID`, quyền truy cập, phiên bản triển khai. Không cần triển khai lại Apps Script nếu đang dùng đúng mã nhận `e.parameter.name` và `e.parameter.message` đã hướng dẫn.
+
+Danh sách chỉ đọc tối đa 50 lời chúc mới nhất từ tab `LoiChuc` qua GET JSONP; không đọc/ghi lời chúc trong localStorage và không hiển thị lời chúc mẫu. Sau khi gửi, trang tải lại danh sách từ Sheet. Dữ liệu cục bộ cũ bị bỏ qua. Nếu tải thất bại, trang hiện thông báo và nút tải lại; Sheet chưa có lời chúc thì hiện lời mời gửi đầu tiên.
+
+Để bật đọc danh sách: sao chép toàn bộ `google-apps-script.gs` vào Code.gs trong Apps Script, giữ giá trị `SHEET_ID` thật đang dùng. Chọn Deploy → Manage deployments → Edit → Version: New version → Deploy để giữ nguyên URL `/exec`. Script cũ chỉ có doGet trả văn bản sẽ chưa đọc được lời chúc. Endpoint đọc công khai tên, nội dung và thời gian lời chúc để khách mời cùng xem. Không công khai các tab khác.
+
+Xác nhận tham dự đã dùng cùng URL Apps Script với `rsvpFormat: 'apps-script'`. Trang gửi biểu mẫu có `action=rsvp`, `name`, `attendance` (`yes`/`no`) và `count`; script ghi tab riêng `XacNhanThamDu` gồm thời gian, tên khách, tham dự Có/Không và số người 1/0 theo lựa chọn. Mỗi lần gửi là một dòng mới. Danh sách xác nhận không được trả công khai qua doGet. Cần cập nhật toàn bộ Code.gs từ `google-apps-script.gs` và triển khai phiên bản mới để bật chức năng này. Trạng thái gửi chưa xác nhận ghi Sheet thành công vì dùng no-cors; kiểm tra tab XacNhanThamDu sau lần gửi thử. Đặt `rsvpEndpoint: ''` để chỉ lưu xác nhận cục bộ; endpoint JSON thông thường dùng `rsvpFormat: 'json'` và phải cho phép CORS.
 
 ## Cấu trúc
 

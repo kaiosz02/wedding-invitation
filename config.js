@@ -30,20 +30,16 @@ window.WEDDING_CONFIG = {
   },
   dressCode: [ { color: '#511419', name: 'Đỏ đô' }, { color: '#8d3c47', name: 'Đỏ hồng' }, { color: '#cba346', name: 'Vàng' }, { color: '#eee5d6', name: 'Kem' } ],
   timeline: [
-    { time: '08:00', title: 'Mừng lễ thành hôn', icon: 'assets/cook.webp' },
-  ],
-  banks: [
-    // Chưa có tài khoản thật. Khi có, thêm theo cấu trúc sau:
-    // { label: 'Chú rể', bank: 'Tên ngân hàng', accountNumber: 'Số tài khoản', accountName: 'Tên chủ tài khoản', qrImage: 'media/qr.png' },
+    { time: '08:00', title: 'Dùng bữa cơm thân mật', icon: 'assets/cook.webp' },
+    { time: '13:30', title: 'Rước dâu' },
   ],
   music: { src: 'media/nhac-cuoi.mp3', enabled: true }, // Nhạc nền từ ui_mau; thay đường dẫn nếu muốn đổi bài.
-  // Nếu có dịch vụ nhận RSVP, điền URL endpoint POST JSON tại đây.
-  // Khi để trống, xác nhận và lưu bút chỉ được lưu trên trình duyệt khách đang dùng.
-  rsvpEndpoint: '',
-  guestbook: [
-    { name: 'Duy Khang', message: 'Chúc mừng ngày vui của hai bạn, trăm năm hạnh phúc bền lâu!' },
-    { name: 'Lan Chi', message: 'Đẹp đôi quá! Chúc hai bạn bên nhau đầu bạc răng long.' },
-    { name: 'Tuấn Anh', message: 'Chúc gia đình nhỏ luôn đầy ắp tiếng cười.' },
-  ],
+  // URL Apps Script nhận xác nhận tham dự vào tab XacNhanThamDu.
+  // Khi để trống, xác nhận chỉ được lưu trên trình duyệt khách đang dùng.
+  rsvpEndpoint: 'https://script.google.com/macros/s/AKfycbzFHIEGiQegEYZtOopf8r9nXrzZ9Rsvw4ZRW46v6D4FVS3_kRER20yL78i4vcVSb5J33w/exec',
+  rsvpFormat: 'apps-script',
+  // URL Apps Script nhận lời chúc (POST biểu mẫu gồm name và message).
+  // URL này cũng cung cấp danh sách lời chúc từ Sheet qua GET JSONP.
+  guestbookEndpoint: 'https://script.google.com/macros/s/AKfycbzFHIEGiQegEYZtOopf8r9nXrzZ9Rsvw4ZRW46v6D4FVS3_kRER20yL78i4vcVSb5J33w/exec',
   closing: 'Sự hiện diện của quý khách là niềm vinh hạnh của gia đình chúng tôi!',
 };

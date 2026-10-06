@@ -3,7 +3,6 @@
   const c = window.WEDDING_CONFIG;
   const $ = id => document.getElementById(id);
   if (!c) return;
-  if (!c.isDemo) $('bank-details').querySelector('.quiet').hidden = true;
   document.title = `Thiệp cưới · ${c.groom.name} & ${c.bride.name}`;
   document.querySelectorAll('[data-text]').forEach(el => {
     el.textContent = el.dataset.text.split('.').reduce((v, k) => v?.[k], c) ?? '';
@@ -144,15 +143,23 @@
     const record = { name, attendance, count: attendance === 'yes' ? 1 : 0, createdAt: new Date().toISOString() };
     rsvpSaving = true; btn.disabled = true; $('rsvp-status').textContent = 'Đang lưu xác nhận…';
     try {
-      if (c.rsvpEndpoint) { const res = await fetch(c.rsvpEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(record) }); if (!res.ok) throw new Error('network'); }
+      if (c.rsvpEndpoint && c.rsvpFormat === 'apps-script') {
+        await fetch(c.rsvpEndpoint, {
+          method: 'POST', mode: 'no-cors', credentials: 'omit',
+          body: new URLSearchParams({ action: 'rsvp', name, attendance, count: String(record.count) }),
+        });
+      }
+      else if (c.rsvpEndpoint) { const res = await fetch(c.rsvpEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(record) }); if (!res.ok) throw new Error('network'); }
       else save('rsvp', [...read('rsvp'), record]);
-      $('rsvp-status').textContent = c.rsvpEndpoint ? 'Cảm ơn bạn! Xác nhận đã được gửi.' : 'Đã lưu xác nhận trên trình duyệt này. Cảm ơn bạn!';
+      $('rsvp-status').textContent = c.rsvpEndpoint && c.rsvpFormat === 'apps-script'
+        ? 'Đã gửi yêu cầu xác nhận tham dự. Cảm ơn bạn!'
+        : c.rsvpEndpoint ? 'Cảm ơn bạn! Xác nhận đã được gửi.' : 'Đã lưu xác nhận trên trình duyệt này. Cảm ơn bạn!';
     } catch { $('rsvp-status').textContent = 'Chưa lưu được xác nhận. Vui lòng thử lại hoặc liên hệ trực tiếp cô dâu chú rể.'; }
     finally { rsvpSaving = false; updateRsvpSubmit(); }
   };
-  function renderWishes() {
+  function renderWishes(wishes) {
     $('wishes').replaceChildren();
-    [...read('wishes').reverse(), ...c.guestbook].slice(0, 50).forEach(w => {
+    wishes.slice(0, 50).forEach(w => {
       const item = element('article', null, 'wish'), header = element('div', null, 'wish-header');
       header.append(element('strong', w.name));
       if (w.createdAt && !Number.isNaN(Date.parse(w.createdAt))) {
@@ -165,30 +172,77 @@
     });
     if (!$('wishes').childElementCount) $('wishes').append(element('p', 'Hãy là người đầu tiên gửi lời chúc đến cô dâu và chú rể.', 'wish-empty'));
   }
+  let wishLoad;
+  let wishRequest = 0;
+  function loadWishes() {
+    if (wishLoad) return wishLoad;
+    $('wishes').replaceChildren(element('p', 'Đang tải lời chúc…', 'wish-empty'));
+    wishLoad = new Promise((resolve, reject) => {
+      if (!c.guestbookEndpoint) { reject(new Error('missing endpoint')); return; }
+      const callback = `weddingWishes_${Date.now()}_${++wishRequest}`;
+      const script = document.createElement('script');
+      let settled = false;
+      const timer = setTimeout(() => finish(new Error('timeout')), 30000);
+      function finish(error, data) {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer); script.remove(); delete window[callback];
+        if (error) reject(error); else resolve(data);
+      }
+      window[callback] = data => {
+        if (!data || data.ok !== true || !Array.isArray(data.wishes)) { finish(new Error('invalid response')); return; }
+        finish(null, data.wishes.filter(w => w && typeof w.name === 'string' && typeof w.message === 'string'));
+      };
+      script.onerror = () => finish(new Error('network'));
+      script.onload = () => { if (!settled) finish(new Error('unsupported endpoint')); };
+      const url = new URL(c.guestbookEndpoint);
+      url.searchParams.set('action', 'list'); url.searchParams.set('callback', callback);
+      url.searchParams.set('_', String(Date.now()));
+      script.src = url.href; document.head.append(script);
+    }).then(wishes => { renderWishes(wishes); return wishes; }).catch(error => {
+      console.warn('Không tải được sổ lưu bút:', error.message);
+      $('wishes').replaceChildren(element('p', 'Chưa tải được lời chúc. Vui lòng thử lại.', 'wish-empty'));
+      const retry = element('button', 'Tải lại lời chúc', 'button');
+      retry.type = 'button'; retry.onclick = () => loadWishes(); $('wishes').append(retry);
+      return null;
+    }).finally(() => { wishLoad = null; });
+    return wishLoad;
+  }
   const suggestedWishes = ['Chúc hai bạn trăm năm hạnh phúc, luôn yêu thương và đồng hành cùng nhau!', 'Chúc mừng ngày vui! Chúc gia đình nhỏ luôn đầy ắp tiếng cười và yêu thương.', 'Chúc cô dâu chú rể một đời bình an, hạnh phúc và mãi bên nhau.'];
   let suggestionIndex = 0;
   $('suggest-wish').onclick = () => { $('wish-message').value = suggestedWishes[suggestionIndex++ % suggestedWishes.length]; $('wish-message').focus(); };
-  $('wish-form').onsubmit = e => {
+  $('wish-note').textContent = 'Lời chúc được lưu vào sổ lưu bút chung và hiển thị cho khách mời.';
+  let wishSaving = false;
+  $('wish-form').onsubmit = async e => {
     e.preventDefault(); const name = $('wish-name').value.trim(), message = $('wish-message').value.trim();
+    if (wishSaving) return;
     if (!name || !message) { $('wish-status').textContent = 'Vui lòng nhập tên và lời chúc.'; return; }
-    try { save('wishes', [...read('wishes'), { name, message, createdAt: new Date().toISOString() }]); renderWishes(); $('wishes').scrollTop = 0; $('wish-message').value = ''; $('wish-status').textContent = 'Cảm ơn lời chúc của bạn! Đã lưu trên trình duyệt này.'; }
-    catch { $('wish-status').textContent = 'Trình duyệt chưa cho phép lưu. Vui lòng thử lại.'; }
+    if (name.length > 80 || message.length > 1000) { $('wish-status').textContent = 'Tên tối đa 80 ký tự, lời chúc tối đa 1000 ký tự.'; return; }
+    const btn = $('wish-form').querySelector('button[type="submit"]');
+    if (!c.guestbookEndpoint) { $('wish-status').textContent = 'Sổ lưu bút chưa được kết nối. Vui lòng liên hệ cô dâu và chú rể.'; return; }
+    wishSaving = true; btn.disabled = true; btn.textContent = 'Đang gửi…';
+    $('wish-form').setAttribute('aria-busy', 'true');
+    $('wish-status').textContent = 'Đang gửi lời chúc…';
+    try {
+        // Apps Script đọc e.parameter từ biểu mẫu, không phải JSON.
+        // no-cors gửi được từ trang tĩnh nhưng không đọc được phản hồi của Google.
+        // Không báo đã lưu vào Sheet khi chưa có xác nhận từ máy chủ.
+        await fetch(c.guestbookEndpoint, {
+          method: 'POST', mode: 'no-cors', credentials: 'omit',
+          body: new URLSearchParams({ name, message }),
+        });
+      if ($('wish-message').value.trim() === message) $('wish-message').value = '';
+      $('wish-status').textContent = 'Đã gửi yêu cầu lưu lời chúc. Cảm ơn bạn!';
+      if (wishLoad) await wishLoad;
+      await loadWishes(); $('wishes').scrollTop = 0;
+    } catch {
+      $('wish-status').textContent = 'Chưa gửi được lời chúc. Vui lòng kiểm tra kết nối mạng và thử lại.';
+    } finally {
+      wishSaving = false; btn.disabled = false; btn.textContent = 'Gửi lời chúc';
+      $('wish-form').removeAttribute('aria-busy');
+    }
   };
-  renderWishes();
-  if (!c.banks.length) $('banks').append(element('p', 'Thông tin mừng cưới sẽ được gia đình cập nhật sau.', 'quiet'));
-  c.banks.forEach(bank => {
-    const item = element('article', null, 'bank'); item.append(element('h3', bank.label), element('p', bank.bank), element('strong', bank.accountNumber, 'account-number'), element('p', bank.accountName));
-    if (bank.qrImage) { const img = element('img'); img.src = bank.qrImage; img.alt = `Mã QR tài khoản ${bank.label}`; const link = element('a', 'Lưu ảnh QR'); link.href = bank.qrImage; link.download = `QR-${bank.label}.png`; item.append(img, link); }
-    const copy = element('button', 'Sao chép số tài khoản', 'button'); copy.type = 'button';
-    copy.onclick = async () => { try { await navigator.clipboard.writeText(bank.accountNumber); copy.textContent = 'Đã sao chép'; } catch { const input = element('input'); input.value = bank.accountNumber; item.append(input); input.select(); copy.textContent = 'Chọn số và sao chép'; } };
-    item.append(copy); $('banks').append(item);
-  });
-  let giftVisible = false;
-  function syncGiftMotion() { $('open-gift').classList.toggle('gift-motion-active', giftVisible && !document.hidden && !motionPreference.matches && $('bank-details').hidden); }
-  new IntersectionObserver(entries => { giftVisible = entries[0].isIntersecting; syncGiftMotion(); }, { threshold: .15 }).observe($('open-gift'));
-  document.addEventListener('visibilitychange', syncGiftMotion);
-  motionPreference.addEventListener('change', syncGiftMotion);
-  $('open-gift').onclick = () => { const open = $('bank-details').hidden; $('bank-details').hidden = !open; $('open-gift').setAttribute('aria-expanded', String(open)); $('open-gift').querySelector('.gift-caption').textContent = open ? 'Nhấn để thu gọn' : 'Nhấn để mở'; syncGiftMotion(); };
+  loadWishes();
   const icsEscape = s => String(s).replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
   $('add-calendar').onclick = () => {
     const start = new Date(`${c.reception.date}T${c.reception.time}:00+07:00`), end = new Date(start.getTime() + 3 * 3600000);
@@ -220,6 +274,43 @@
       } finally { button.disabled = false; }
     };
   }
+  // Nội dung hiển thị mặc định; mỗi phần chỉ hiện dần một lần khi cuộn tới.
+  function startScrollReveals() {
+    if (motionPreference.matches || !('IntersectionObserver' in window) || !Element.prototype.animate) return;
+    const active = new Map();
+    const sections = [...$('invitation').querySelectorAll(':scope > section, :scope > footer')];
+    function finishReveal(target) {
+      const animation = active.get(target);
+      if (animation) { animation.cancel(); active.delete(target); }
+    }
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(({ target, isIntersecting }) => {
+        if (!isIntersecting) return;
+        observer.unobserve(target);
+        if (motionPreference.matches || document.hidden || target.contains(document.activeElement)) return;
+        const isPaper = target.classList.contains('paper-section');
+        const animation = target.animate([
+          { opacity: .12, translate: `0 ${isPaper ? 20 : 14}px` },
+          { opacity: 1, translate: '0 0' },
+        ], { duration: isPaper ? 1150 : 1000, easing: 'cubic-bezier(.16, 1, .3, 1)' });
+        active.set(target, animation);
+        animation.finished.then(() => {
+          if (active.get(target) === animation) active.delete(target);
+        }).catch(() => {});
+      });
+    }, { threshold: 0, rootMargin: '0px 0px -24px 0px' });
+    sections.forEach(section => observer.observe(section));
+    $('invitation').addEventListener('focusin', event => {
+      const section = sections.find(section => section.contains(event.target));
+      if (section) { observer.unobserve(section); finishReveal(section); }
+    });
+    motionPreference.addEventListener('change', event => {
+      if (event.matches) { observer.disconnect(); [...active.keys()].forEach(finishReveal); }
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) [...active.keys()].forEach(finishReveal);
+    });
+  }
   const opening = $('opening-screen'), openButton = $('open-invitation');
   const openingCard = opening.querySelector('.opening-content');
   document.addEventListener('visibilitychange', () => {
@@ -241,6 +332,7 @@
       $('invitation').inert = false;
       document.body.classList.remove('awaiting-open');
       $('invitation').focus({ preventScroll: true });
+      startScrollReveals();
     }
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       finishOpening();
